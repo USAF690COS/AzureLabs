@@ -1,0 +1,89 @@
+{
+    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "userName": {
+            "type": "string"
+        },
+        "labType": {
+            "type": "string"
+        },
+        "utcValue": {
+            "type": "string",
+            "defaultValue": "[utcNow()]"
+        }
+    },
+    "variables": {
+        "location": "westus",
+        "rgPrefix": "RG",
+        "randomInt": "[substring(uniqueString(parameters('utcValue')),0,6)]",
+        "rgName": "[concat(variables('rgPrefix'), parameters('userName') ,parameters('labType'), variables('randomInt'))]"
+    },
+
+    "resources": [
+        {
+            "type": "Microsoft.Resources/resourceGroups",
+            "apiVersion": "2018-05-01",
+            "location": "[variables('location')]",
+            "name": "[variables('rgName')]",
+            "properties": {}
+        },
+        {
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2017-05-10",
+            "name": "VNETDeployment",
+            "resourceGroup": "[variables('rgName')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Resources/resourceGroups/', variables('rgName'))]"
+            ],
+            "properties": {
+                "expressionEvaluationOptions": {
+                    "scope": "inner"
+                },
+                "mode": "Incremental",
+                "template": {
+                    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+                    "contentVersion": "1.0.0.0",
+                    "parameters": {},
+                    "variables": {
+                        "location": "[resourceGroup().location]",
+                        "vnetPrefix": "vnet",
+                        "virtualNetworkName": "[concat(variables('vnetPrefix'), uniqueString(resourceGroup().id))]"
+                    },
+                    "resources": [
+                        {
+                            "type": "Microsoft.Network/virtualNetworks",
+                            "apiVersion": "2019-09-01",
+                            "name": "[variables('virtualNetworkName')]",
+                            "location": "[variables('location')]",
+                            "dependsOn": [],
+                            "tags": {},
+                            "properties": {
+                                "addressSpace": {
+                                    "addressPrefixes": [
+                                        "10.1.0.0/16"
+                                    ]
+                                },
+                                "subnets": [
+                                    {
+                                        "name": "Subnet1",
+                                        "properties": {
+                                            "addressPrefix": "10.1.1.0/24"
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    ],
+                    "outputs": {}
+                }
+            }
+        }
+    ],
+    "outputs": {
+        "RGName": {
+            "type": "string",
+            "value": "[variables('rgName')]"
+        }
+    }
+}
