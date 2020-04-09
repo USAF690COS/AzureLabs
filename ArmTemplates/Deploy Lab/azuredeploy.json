@@ -17,15 +17,22 @@
         "location": "westus",
         "rgPrefix": "RG",
         "randomInt": "[substring(uniqueString(parameters('utcValue')),0,6)]",
-        "rgName": "[concat(variables('rgPrefix'), parameters('userName') ,parameters('labType'), variables('randomInt'))]"
+        "rgName": "[concat(variables('rgPrefix'), parameters('userName') ,parameters('labType'), variables('randomInt'))]",
+        "resourceTags": {
+            "type": "object",
+            "defaultValue": {
+                "CreatedBy": "[parameters('userName')]",
+                "LabType": "[parameters('labType')]"
+            }
+        }
     },
-
     "resources": [
         {
             "type": "Microsoft.Resources/resourceGroups",
             "apiVersion": "2018-05-01",
             "location": "[variables('location')]",
             "name": "[variables('rgName')]",
+            "tags": "[variables('resourceTags')]",
             "properties": {}
         },
         {
@@ -41,6 +48,11 @@
                     "scope": "inner"
                 },
                 "mode": "Incremental",
+                "parameters": {
+                    "tags": {
+                        "value":  "[variables('resourceTags')]"
+                    }
+                },
                 "template": {
                     "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
                     "contentVersion": "1.0.0.0",
@@ -57,7 +69,7 @@
                             "name": "[variables('virtualNetworkName')]",
                             "location": "[variables('location')]",
                             "dependsOn": [],
-                            "tags": {},
+                            "tags": "[parameters('tags')]",
                             "properties": {
                                 "addressSpace": {
                                     "addressPrefixes": [
