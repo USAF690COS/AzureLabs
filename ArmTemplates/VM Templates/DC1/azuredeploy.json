@@ -1,0 +1,141 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+  },
+  "variables": {
+    "location": "[resourceGroup().location]",
+    "snapshots_externalid": "/subscriptions/dad08713-2fe7-44c6-b4f5-301d727f307d/resourceGroups/DEPLOYFROMSNAPSHOT/providers/Microsoft.Compute/snapshots/RDGatewaySnapshot",
+    "vmName": "DC1",
+    "osType": "Windows",
+    "vmSize": "Standard_A2_v2",
+    "vnetPrefix": "vnet",
+    "existingVirtualNetworkName": "[concat(variables('vnetPrefix'), uniqueString(resourceGroup().id))]",
+    "existingVirtualNetworkResourceGroup": "[resourceGroup().name]",
+    "subnetName": "Subnet1",
+    "resourceTags": "[resourceGroup().tags]",
+    "diagStorageAccountName": "[toLower(concat(variables('vmName'), 'diag', uniqueString(resourceGroup().id)))]",
+    "publicIPAddressType": "Dynamic",
+    "subnetRef": "[resourceId(variables('existingVirtualNetworkResourceGroup'), 'Microsoft.Network/virtualNetworks/subnets', variables('existingVirtualNetworkName'),  variables('subnetName'))]",
+    "nicName": "[concat(variables('vmName'), '-nic1')]",
+    "publicIPAddressName": "[concat(variables('vmName'), '-pip')]"
+  },
+  "resources": [
+    {
+      "apiVersion": "2018-02-01",
+      "type": "Microsoft.Storage/storageAccounts",
+      "name": "[variables('diagStorageAccountName')]",
+      "location": "[variables('location')]",
+      "sku": {
+        "name": "Standard_GRS"
+      },
+      "kind": "Storage",
+      "properties": {}
+    },
+    {
+      "apiVersion": "2015-06-15",
+      "type": "Microsoft.Network/publicIPAddresses",
+      "name": "[variables('publicIPAddressName')]",
+      "location": "[variables('location')]",
+      "tags": {
+        "displayName": "PublicIPAddress"
+      },
+      "properties": {
+        "publicIPAllocationMethod": "[variables('publicIPAddressType')]"
+      }
+    },
+    {
+      "apiVersion": "2015-06-15",
+      "type": "Microsoft.Network/networkInterfaces",
+      "name": "[variables('nicName')]",
+      "location": "[variables('location')]",
+      "dependsOn": [
+        "[concat('Microsoft.Network/publicIPAddresses/', variables('publicIPAddressName'))]"
+      ],
+      "tags": {
+        "displayName": "NetworkInterface"
+      },
+      "properties": {
+        "ipConfigurations": [
+          {
+            "name": "ipconfig1",
+            "properties": {
+              "privateIPAllocationMethod": "Dynamic",
+              "publicIPAddress": {
+                "id": "[resourceId('Microsoft.Network/publicIPAddresses',variables('publicIPAddressName'))]"
+              },
+              "subnet": {
+                "id": "[variables('subnetRef')]"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.Compute/disks",
+      "apiVersion": "2019-07-01",
+      "name": "[concat(variables('vmName'), '_OSdisk')]",
+      "location": "[variables('location')]",
+      "sku": {
+          "name": "Standard_LRS",
+          "tier": "Standard"
+      },
+      "properties": {
+          "osType": "Windows",
+          "hyperVGeneration": "V1",
+          "creationData": {
+              "createOption": "Copy",
+              "sourceResourceId": "[variables('snapshots_externalid')]"
+          },
+          "diskSizeGB": 128,
+          "diskIOPSReadWrite": 500,
+          "diskMBpsReadWrite": 100,
+          "encryption": {
+              "type": "EncryptionAtRestWithPlatformKey"
+          }
+      }
+    },
+    {
+      "apiVersion": "2017-03-30",
+      "type": "Microsoft.Compute/virtualMachines",
+      "name": "[variables('vmName')]",
+      "location": "[variables('location')]",
+      "tags": {
+        "displayName": "VirtualMachine"
+      },
+      "dependsOn": [
+        "[concat('Microsoft.Network/networkInterfaces/', variables('nicName'))]",
+        "[concat(variables('vmName'), '_OSdisk')]"
+      ],
+      "properties": {
+        "hardwareProfile": {
+          "vmSize": "[variables('vmSize')]"
+        },
+        "storageProfile": {
+          "osDisk": {
+            "osType": "[variables('osType')]",
+            "caching": "ReadWrite",
+            "createOption": "Attach",
+            "managedDisk": {
+              "id": "[resourceId('Microsoft.Compute/disks', concat(variables('vmName'), '_OSdisk'))]"
+            }
+          }
+        },
+        "networkProfile": {
+          "networkInterfaces": [
+            {
+              "id": "[resourceId('Microsoft.Network/networkInterfaces',variables('nicName'))]"
+            }
+          ]
+        },
+        "diagnosticsProfile": {
+          "bootDiagnostics": {
+            "enabled":  true ,
+            "storageUri": "[concat(reference(concat('Microsoft.Storage/storageAccounts/', variables('diagStorageAccountName')), '2016-01-01').primaryEndpoints.blob)]"
+          }
+        }
+      }
+    }
+  ]
+}
