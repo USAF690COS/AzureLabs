@@ -9,7 +9,7 @@
         {
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2017-05-10",
-            "name": "linkedTemplate",
+            "name": "DC1Deploy",
             "resourceGroup": "[resourceGroup().name]",
             "properties": {
                 "mode": "Incremental",

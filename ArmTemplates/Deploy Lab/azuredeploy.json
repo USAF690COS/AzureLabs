@@ -87,7 +87,7 @@
         {
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2017-05-10",
-            "name": "linkedTemplate",
+            "name": "LinkedLabStartup",
             "resourceGroup": "[variables('rgName')]",
             "properties": {
                 "mode": "Incremental",
