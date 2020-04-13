@@ -5,7 +5,8 @@
   },
   "variables": {
     "location": "[resourceGroup().location]",
-    "snapshots_externalid": "/subscriptions/dad08713-2fe7-44c6-b4f5-301d727f307d/resourceGroups/DEPLOYFROMSNAPSHOT/providers/Microsoft.Compute/snapshots/RDGatewaySnapshot",
+    "subScriptionID": "[subscription().subScriptionID]",
+    "snapshots_externalid": "[concat('/subscriptions/', variables('subScriptionID'), '/resourceGroups/DEPLOYFROMSNAPSHOT/providers/Microsoft.Compute/snapshots/RDGatewaySnapshot')]",
     "vmName": "DC1",
     "osType": "Windows",
     "vmSize": "Standard_A2_v2",
@@ -37,9 +38,7 @@
       "type": "Microsoft.Network/publicIPAddresses",
       "name": "[variables('publicIPAddressName')]",
       "location": "[variables('location')]",
-      "tags": {
-        "displayName": "PublicIPAddress"
-      },
+      "tags": "[variables('resourceTags')]",
       "properties": {
         "publicIPAllocationMethod": "[variables('publicIPAddressType')]"
       }
@@ -52,9 +51,7 @@
       "dependsOn": [
         "[concat('Microsoft.Network/publicIPAddresses/', variables('publicIPAddressName'))]"
       ],
-      "tags": {
-        "displayName": "NetworkInterface"
-      },
+      "tags": "[variables('resourceTags')]",
       "properties": {
         "ipConfigurations": [
           {
@@ -101,9 +98,7 @@
       "type": "Microsoft.Compute/virtualMachines",
       "name": "[variables('vmName')]",
       "location": "[variables('location')]",
-      "tags": {
-        "displayName": "VirtualMachine"
-      },
+      "tags": "[variables('resourceTags')]",
       "dependsOn": [
         "[concat('Microsoft.Network/networkInterfaces/', variables('nicName'))]",
         "[concat(variables('vmName'), '_OSdisk')]"

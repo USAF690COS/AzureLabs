@@ -83,7 +83,23 @@
                     "outputs": {}
                 }
             }
-        }
+        },
+        {
+        "type": "Microsoft.Resources/deployments",
+        "apiVersion": "2017-05-10",
+        "name": "linkedTemplate",
+        "location": "[variables('location')]",
+        "properties": {
+            "mode": "Incremental",
+            "templateLink": {
+            "uri":"https://github.com/USAF690COS/AzureLabs.git/master/ArmTemplates/VM%20Templates/DC1/azuredeploy.json?token=64476eb9d8af33a4274e3807529acce1a530743b",
+            "contentVersion":"1.0.0.0"
+            }
+        },
+        "dependsOn": [
+            "VNETDeployment"
+        ]
+    }
     ],
     "outputs": {
         "RGName": {
