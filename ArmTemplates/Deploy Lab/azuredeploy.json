@@ -17,7 +17,7 @@
         }
     },
     "variables": {
-        "location": "westus",
+        "location": "westus2",
         "rgPrefix": "RG",
         "labDeploymentName": "[concat(parameters('labName'), 'LabDeployment')]",
         "randomInt": "[substring(uniqueString(parameters('utcValue')),0,6)]",
