@@ -19,6 +19,7 @@
     "variables": {
         "location": "westus",
         "rgPrefix": "RG",
+        "labDeploymentName": "[concat(parameters('labName'), 'LabDeployment')]",
         "randomInt": "[substring(uniqueString(parameters('utcValue')),0,6)]",
         "labDeployURL": "[concat('https://raw.githubusercontent.com/USAF690COS/AzureLabs/master/ArmTemplates/', parameters('labType'), '/', parameters('labName'), '/azuredeploy.json')]",
         "rgName": "[concat(variables('rgPrefix'), parameters('userName') ,parameters('labType'), variables('randomInt'))]",
@@ -97,7 +98,7 @@
         {
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2017-05-10",
-            "name": "LinkedLabStartup",
+            "name": "[variables('labDeploymentName')]",
             "resourceGroup": "[variables('rgName')]",
             "properties": {
                 "mode": "Incremental",
