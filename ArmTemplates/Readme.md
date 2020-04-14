@@ -1,2 +1,2 @@
 # ArmTemplates
-ARM Deployment Templates for Azure Training &amp; Test labs
+ARM Deployment Templates Folder for Azure Training &amp; Test labs
