@@ -9,7 +9,7 @@
         {
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2017-05-10",
-            "name": "DC1Deploy",
+            "name": "DCPromoLabDeploy",
             "resourceGroup": "[resourceGroup().name]",
             "properties": {
                 "mode": "Incremental",
@@ -18,6 +18,19 @@
                 "contentVersion":"1.0.0.0"
                 }
             }
-        }
+        },
+        {
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2017-05-10",
+            "name": "DCPromoLabDeploy",
+            "resourceGroup": "[resourceGroup().name]",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                "uri":"https://raw.githubusercontent.com/USAF690COS/AzureLabs/master/ArmTemplates/VM%20Templates/DC2/azuredeploy.json",
+                "contentVersion":"1.0.0.0"
+                }
+            }
+        }        
 	]
 }

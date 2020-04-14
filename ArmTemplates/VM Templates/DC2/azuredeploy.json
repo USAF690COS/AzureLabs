@@ -6,8 +6,8 @@
     "variables": {
       "location": "[resourceGroup().location]",
       "subScriptionID": "[subscription().subScriptionID]",
-      "snapshots_externalid": "[concat('/subscriptions/', variables('subScriptionID'), '/resourceGroups/Trn_Lab_DCrepl_001/providers/Microsoft.Compute/snapshots/TrnLabDCreplDC1_snap041020')]",
-      "vmName": "DC1",
+      "snapshots_externalid": "[concat('/subscriptions/', variables('subScriptionID'), '/resourceGroups/Trn_Lab_DCrepl_001/providers/Microsoft.Compute/snapshots/TrnLabDCreplDC2_snap041020')]",
+      "vmName": "DC2",
       "osType": "Windows",
       "vmSize": "Standard_A2_v2",
       "vnetPrefix": "vnet",
@@ -19,10 +19,21 @@
       "publicIPAddressType": "Dynamic",
       "subnetRef": "[resourceId(variables('existingVirtualNetworkResourceGroup'), 'Microsoft.Network/virtualNetworks/subnets', variables('existingVirtualNetworkName'),  variables('subnetName'))]",
       "nicName": "[concat(variables('vmName'), '-nic1')]",
-      "privateIPAddress": "10.10.0.11",
+      "privateIPAddress": "10.10.0.12",
       "publicIPAddressName": "[concat(variables('vmName'), '-pip')]"
     },
     "resources": [
+      {
+        "apiVersion": "2018-02-01",
+        "type": "Microsoft.Storage/storageAccounts",
+        "name": "[variables('diagStorageAccountName')]",
+        "location": "[variables('location')]",
+        "sku": {
+          "name": "Standard_GRS"
+        },
+        "kind": "Storage",
+        "properties": {}
+      },
       {
         "apiVersion": "2015-06-15",
         "type": "Microsoft.Network/publicIPAddresses",
@@ -114,6 +125,12 @@
                 "id": "[resourceId('Microsoft.Network/networkInterfaces',variables('nicName'))]"
               }
             ]
+          },
+          "diagnosticsProfile": {
+            "bootDiagnostics": {
+              "enabled":  true ,
+              "storageUri": "[concat(reference(concat('Microsoft.Storage/storageAccounts/', variables('diagStorageAccountName')), '2016-01-01').primaryEndpoints.blob)]"
+            }
           }
         }
       }

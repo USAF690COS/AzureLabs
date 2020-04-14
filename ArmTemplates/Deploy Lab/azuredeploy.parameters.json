@@ -6,7 +6,10 @@
         "value": "KevinTest"
       },
       "labType": {
-        "value": "DSO-DCPromo"
+        "value": "DSO"
+      },
+      "labName": {
+        "value": "DCPromo"
       }
     }
   }

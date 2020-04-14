@@ -8,6 +8,9 @@
         "labType": {
             "type": "string"
         },
+        "labName": {
+        "type": "string"
+        },
         "utcValue": {
             "type": "string",
             "defaultValue": "[utcNow()]"
@@ -17,6 +20,7 @@
         "location": "westus",
         "rgPrefix": "RG",
         "randomInt": "[substring(uniqueString(parameters('utcValue')),0,6)]",
+        "labDeployURL": "[concat('https://raw.githubusercontent.com/USAF690COS/AzureLabs/master/ArmTemplates/', parameters('labType'), '/', parameters('labName'), '/azuredeploy.json')]",
         "rgName": "[concat(variables('rgPrefix'), parameters('userName') ,parameters('labType'), variables('randomInt'))]",
         "resourceTags": {
             "CreatedBy": "[parameters('userName')]",
@@ -66,14 +70,20 @@
                             "properties": {
                                 "addressSpace": {
                                     "addressPrefixes": [
-                                        "10.1.0.0/16"
+                                        "10.10.0.0/16"
+                                    ]
+                                },
+                                "dhcpOptions": {
+                                    "dnsServers": [
+                                        "10.10.0.11",
+                                        "10.10.0.12"
                                     ]
                                 },
                                 "subnets": [
                                     {
                                         "name": "Subnet1",
                                         "properties": {
-                                            "addressPrefix": "10.1.1.0/24"
+                                            "addressPrefix": "10.10.0.0/24"
                                         }
                                     }
                                 ]
@@ -92,7 +102,7 @@
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                "uri":"https://raw.githubusercontent.com/USAF690COS/AzureLabs/master/ArmTemplates/DSO/DCPromo/azuredeploy.json",
+                "uri": "[variables('labDeployURL')]",
                 "contentVersion":"1.0.0.0"
                 }
             },
