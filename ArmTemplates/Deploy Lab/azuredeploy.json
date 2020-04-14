@@ -5,18 +5,18 @@
         "userName": {
             "type": "string"
         },
+        "location": {
+            "type": "string"
+        },
         "labType": {
             "type": "string"
         },
         "labName": {
-        "type": "string"
+            "type": "string"
         },
         "utcValue": {
             "type": "string",
             "defaultValue": "[utcNow()]"
-        },
-        "location": {
-            "type": "string"
         }
     },
     "variables": {
@@ -67,7 +67,7 @@
                             "type": "Microsoft.Network/virtualNetworks",
                             "apiVersion": "2019-09-01",
                             "name": "[variables('virtualNetworkName')]",
-                            "location": "[parameters('location')]",
+                            "location": "[variables('location')]",
                             "dependsOn": [],
                             "tags": "[variables('resourceTags')]",
                             "properties": {
