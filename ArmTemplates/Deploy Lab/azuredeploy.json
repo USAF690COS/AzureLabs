@@ -14,10 +14,12 @@
         "utcValue": {
             "type": "string",
             "defaultValue": "[utcNow()]"
+        },
+        "location": {
+            "type": "string"
         }
     },
     "variables": {
-        "location": "westus2",
         "rgPrefix": "RG",
         "labDeploymentName": "[concat(parameters('labName'), 'LabDeployment')]",
         "randomInt": "[substring(uniqueString(parameters('utcValue')),0,6)]",
@@ -32,7 +34,7 @@
         {
             "type": "Microsoft.Resources/resourceGroups",
             "apiVersion": "2018-05-01",
-            "location": "[variables('location')]",
+            "location": "[parameters('location')]",
             "name": "[variables('rgName')]",
             "tags": "[variables('resourceTags')]",
             "properties": {}
@@ -65,7 +67,7 @@
                             "type": "Microsoft.Network/virtualNetworks",
                             "apiVersion": "2019-09-01",
                             "name": "[variables('virtualNetworkName')]",
-                            "location": "[variables('location')]",
+                            "location": "[parameters('location')]",
                             "dependsOn": [],
                             "tags": "[variables('resourceTags')]",
                             "properties": {

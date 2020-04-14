@@ -5,6 +5,9 @@
       "userName": {
         "value": "KevinTest"
       },
+      "location": {
+        "value": "westus2"
+      },
       "labType": {
         "value": "DSO"
       },
