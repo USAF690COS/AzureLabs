@@ -21,6 +21,7 @@
       "privateIPAddress": "10.10.0.11",
       "lbName": "[concat('LBPublic-690-', resourceGroup().location)]",
       "lbRG": "[concat('LBResources-', resourceGroup().location)]",
+      "publicIPaddressName": "[concat('IPPublic-690-', resourceGroup().location)]",
       "rgName": "[resourceGroup().name]" 
     },
     "resources": [
@@ -137,9 +138,16 @@
                             "name": "[variables('RGName')]",
                             "properties": {
                               "frontendIPConfigurations": [
-                                {
-                                "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('lbName')), '/frontendIPConfigurations/LoadBalancerFrontEnd')]"
-                                }
+                                  {
+                                      "name": "LoadBalancerFrontEnd",
+                                      "properties": {
+                                          "privateIPAllocationMethod": "Dynamic",
+                                          "publicIPAddress": {
+                                              "id": "[resourceId('Microsoft.Network/publicIPAddresses',variables('publicIPAddressName'))]"
+                                          },
+                                          "privateIPAddressVersion": "IPv4"
+                                      }
+                                  }
                               ],
                               "backendIPConfigurations": [
                                 {
