@@ -167,7 +167,7 @@
                             "name": "[concat(variables('vmName'), resourceGroup().name, '-NAT-In')]",
                             "properties": {
                               "frontendIPConfiguration": {
-                                "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('lbName')), '/frontendIPConfigurations/LoadBalancerFrontEnd')]"
+                                "id": "[concat(resourceId(variables('lbRG'), 'Microsoft.Network/loadBalancers', variables('lbName')), '/frontendIPConfigurations/LoadBalancerFrontEnd')]"
                               },
                               "frontendPort": 63415,
                               "backendPort": 3389,
