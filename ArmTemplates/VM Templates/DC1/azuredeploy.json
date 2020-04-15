@@ -15,32 +15,20 @@
       "existingVirtualNetworkResourceGroup": "[resourceGroup().name]",
       "subnetName": "Subnet1",
       "resourceTags": "[resourceGroup().tags]",
-      "diagStorageAccountName": "[toLower(concat(variables('vmName'), 'diag', uniqueString(resourceGroup().id)))]",
       "publicIPAddressType": "Dynamic",
       "subnetRef": "[resourceId(variables('existingVirtualNetworkResourceGroup'), 'Microsoft.Network/virtualNetworks/subnets', variables('existingVirtualNetworkName'),  variables('subnetName'))]",
       "nicName": "[concat(variables('vmName'), '-nic1')]",
       "privateIPAddress": "10.10.0.11",
-      "publicIPAddressName": "[concat(variables('vmName'), '-pip')]"
+      "lbName": "[concat('LBPublic-690-', resourceGroup().location)]",
+      "lbRG": "[concat('LBResources-', resourceGroup().location)]",
+      "rgName": "[resourceGroup().name]" 
     },
     "resources": [
-      {
-        "apiVersion": "2015-06-15",
-        "type": "Microsoft.Network/publicIPAddresses",
-        "name": "[variables('publicIPAddressName')]",
-        "location": "[variables('location')]",
-        "tags": "[variables('resourceTags')]",
-        "properties": {
-          "publicIPAllocationMethod": "[variables('publicIPAddressType')]"
-        }
-      },
       {
         "apiVersion": "2015-06-15",
         "type": "Microsoft.Network/networkInterfaces",
         "name": "[variables('nicName')]",
         "location": "[variables('location')]",
-        "dependsOn": [
-          "[concat('Microsoft.Network/publicIPAddresses/', variables('publicIPAddressName'))]"
-        ],
         "tags": "[variables('resourceTags')]",
         "properties": {
           "ipConfigurations": [
@@ -49,9 +37,6 @@
               "properties": {
                 "privateIPAllocationMethod": "Static",
                 "privateIPAddress": "[variables('privateIPAddress')]",
-                "publicIPAddress": {
-                  "id": "[resourceId('Microsoft.Network/publicIPAddresses',variables('publicIPAddressName'))]"
-                },
                 "subnet": {
                   "id": "[variables('subnetRef')]"
                 }
@@ -116,6 +101,73 @@
             ]
           }
         }
-      }
+      },
+      {
+          "type": "Microsoft.Resources/deployments",
+          "apiVersion": "2017-05-10",
+          "name": "NATConfigurations",
+          "resourceGroup": "[variables('lbRG')]",
+          "dependsOn": [
+              "[resourceId('Microsoft.Network/networkInterfaces',variables('nicName'))]"
+          ],
+          "properties": {
+              "expressionEvaluationOptions": {
+                  "scope": "outer"
+              },
+              "mode": "Incremental",
+              "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "parameters": {},    
+                  "variables": {
+                    "lbName": "[concat('LBPublic-690-', resourceGroup().location)]",
+                    "lbRG": "[concat('LBResources-', resourceGroup().location)]",
+                    "location": "[resourceGroup().location]",
+                    "resourceTags": "[resourceGroup().tags]"
+                  },
+                  "resources": [
+                    {
+                      "type": "Microsoft.Network/loadBalancers",
+                      "apiVersion": "2019-11-01",
+                      "name": "[variables('lbName')]",
+                      "location": "[variables('location')]",
+                      "properties": {
+                        "backendAddressPools": [
+                          {
+                            "name": "[variables('RGName')]",
+                            "properties": {
+                              "backendIPConfigurations": [
+                                {
+                                  "id": "[resourceId('Microsoft.Network/networkInterfaces',variables('nicName'))]"
+                                }
+                              ]
+                            }
+                          }
+                        ],
+                        "loadBalancingRules": [],
+                        "probes": [],
+                        "inboundNatRules": [
+                          {
+                            "name": "[concat(variables('vmName'), resourceGroup().name, '-NAT-In')]",
+                            "properties": {
+                              "frontendIPConfiguration": {
+                                "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('lbName')), '/frontendIPConfigurations/LoadBalancerFrontEnd')]"
+                              },
+                              "frontendPort": 63415,
+                              "backendPort": 3389,
+                              "enableFloatingIP": false,
+                              "idleTimeoutInMinutes": 4,
+                              "protocol": "Tcp",
+                              "enableTcpReset": false
+                            }
+                          }
+                        ],
+                        "inboundNatPools": []
+                      }
+                    }
+                  ]
+                }                    
+            }
+        }
     ]
-  }
+}
