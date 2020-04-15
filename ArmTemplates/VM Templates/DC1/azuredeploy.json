@@ -142,7 +142,7 @@
                                 "properties": {
                                     "privateIPAllocationMethod": "Dynamic",
                                     "publicIPAddress": {
-                                        "id": "[resourceId('Microsoft.Network/publicIPAddresses',variables('publicIPAddressName'))]"
+                                        "id": "[resourceId(variables('lbRG'), 'Microsoft.Network/publicIPAddresses',variables('publicIPAddressName'))]"
                                     },
                                     "privateIPAddressVersion": "IPv4"
                                 }
