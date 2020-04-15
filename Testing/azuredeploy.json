@@ -1,54 +1,64 @@
 {
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-  },
-  "variables": {
-    "lbName": "[concat('LBPublic-690-', resourceGroup().location)]",
-    "lbRG": "[concat('LBResources-', resourceGroup().location)]",
-    "location": "[resourceGroup().location]",
-    "RGName": "[resourceGroup().name]",
-    "resourceTags": "[resourceGroup().tags]"
-  },
-  "resources": [
-    {
-      "type": "Microsoft.Network/loadBalancers",
-      "apiVersion": "2019-11-01",
-      "name": "[variables('lbName')]",
-      "location": "[variables('location')]",
-      "properties": {
-        "backendAddressPools": [
-          {
-            "name": "[variables('RGName')]",
+    "$schema": "http://schema.management.azure.com/schemas/2014-04-01-preview/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {},
+    "resources": [
+        {
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2017-05-10",
+            "name": "NicUpdate",
+            "dependsOn": [],
             "properties": {
-              "backendIPConfigurations": [
-                {
-                  "id": "[resourceId('Microsoft.Network/networkInterfaces',variables('nicName'))]"
+                "mode": "Incremental",
+                "parameters": {},
+                "template": {
+                    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+                    "contentVersion": "1.0.0.0",
+                    "parameters": {},
+                    "variables": {},
+                    "resources": [
+                        {
+                            "apiVersion": "2019-07-01",
+                            "type": "Microsoft.Network/networkInterfaces",
+                            "name": "DC1-nic1",
+                            "location": "westus2",
+                            "properties": {
+                                "ipConfigurations": [
+                                    {
+                                        "name": "ipconfig1",
+                                        "id": "/subscriptions/dad08713-2fe7-44c6-b4f5-301d727f307d/resourceGroups/RGKevinTestDSOlv5wum/providers/Microsoft.Network/networkInterfaces/DC1-nic1/ipConfigurations/ipconfig1",
+                                        "type": "Microsoft.Network/networkInterfaces/ipConfigurations",
+                                        "properties": {
+                                            "privateIPAddress": "10.10.0.11",
+                                            "privateIPAllocationMethod": "Static",
+                                            "subnet": {
+                                                "id": "/subscriptions/dad08713-2fe7-44c6-b4f5-301d727f307d/resourceGroups/RGKevinTestDSOlv5wum/providers/Microsoft.Network/virtualNetworks/vnetjj7agboie26bq/subnets/Subnet1"
+                                            },
+                                            "primary": true,
+                                            "privateIPAddressVersion": "IPv4",
+                                            "loadBalancerBackendAddressPools": [
+                                                {
+                                                    "id": "/subscriptions/dad08713-2fe7-44c6-b4f5-301d727f307d/resourceGroups/LBResources-westus2/providers/Microsoft.Network/loadBalancers/LBPublic-690-westus2/backendAddressPools/RGKevinTestDSOlv5wum"
+                                                }
+                                            ],
+                                            "loadBalancerInboundNatRules": [
+                                                {
+                                                    "id": "[concat(parameters('loadBalancers_LBPublic_690_westus2_externalid'), '/inboundNatRules/DC1RGKevinTestDSOlv5wum-NAT-In')]"
+                                                }
+                                            ]
+                                        }
+                                    }
+                                ],
+                                "virtualMachine": {
+                                    "id": "/subscriptions/dad08713-2fe7-44c6-b4f5-301d727f307d/resourceGroups/RGKevinTestDSOlv5wum/providers/Microsoft.Compute/virtualMachines/DC1"
+                                }
+                            }
+                        }
+                    ],
+                    "outputs": {}
                 }
-              ]
-            }
-          }
-        ],
-        "loadBalancingRules": [],
-        "probes": [],
-        "inboundNatRules": [
-          {
-            "name": "[concat(variables('vmName'), '-NAT-In')]",
-            "properties": {
-              "frontendIPConfiguration": {
-                "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('lbName')), '/frontendIPConfigurations/LoadBalancerFrontEnd')]"
-              },
-              "frontendPort": 63415,
-              "backendPort": 3389,
-              "enableFloatingIP": false,
-              "idleTimeoutInMinutes": 4,
-              "protocol": "Tcp",
-              "enableTcpReset": false
-            }
-          }
-        ],
-        "inboundNatPools": []
-      }
-    }
-  ]
+            },
+            "resourceGroup": "RGKevinTestDSOlv5wum"
+        }
+    ]
 }

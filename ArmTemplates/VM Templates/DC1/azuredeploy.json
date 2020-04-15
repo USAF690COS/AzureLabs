@@ -31,6 +31,9 @@
         "name": "[variables('nicName')]",
         "location": "[variables('location')]",
         "tags": "[variables('resourceTags')]",
+        "dependsOn": [
+          "NATConfigurations"
+        ],
         "properties": {
           "ipConfigurations": [
             {
@@ -40,7 +43,17 @@
                 "privateIPAddress": "[variables('privateIPAddress')]",
                 "subnet": {
                   "id": "[variables('subnetRef')]"
-                }
+                },
+                "loadBalancerBackendAddressPools": [
+                  {
+                    "id": "[concat(resourceId(variables('lbRG'), 'Microsoft.Network/loadBalancers', variables('lbName')), '/backendAddressPools/', variables('rgName'))]"
+                  }
+                ],
+                "loadBalancerInboundNatRules": [
+                  {
+                    "id": "[concat(resourceId(variables('lbRG'), 'Microsoft.Network/loadBalancers', variables('lbName')), '/inboundNatRules/', variables('vmName'), variables('rgName'), '-NAT-In')]"
+                  }
+                ]
               }
             }
           ]
@@ -150,14 +163,7 @@
                         ],
                         "backendAddressPools": [
                           {
-                            "name": "[variables('RGName')]",
-                            "properties": {
-                              "backendIPConfigurations": [
-                                {
-                                  "id": "[concat(resourceId('Microsoft.Network/networkInterfaces',variables('nicName')), '/ipConfigurations/ipconfig1')]"
-                                }
-                              ]
-                            }
+                            "name": "[variables('RGName')]"
                           }
                         ],
                         "loadBalancingRules": [],
