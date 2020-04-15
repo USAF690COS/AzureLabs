@@ -136,6 +136,11 @@
                           {
                             "name": "[variables('RGName')]",
                             "properties": {
+                              "frontendIPConfigurations": [
+                                {
+                                "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('lbName')), '/frontendIPConfigurations/LoadBalancerFrontEnd')]"
+                                }
+                              ],
                               "backendIPConfigurations": [
                                 {
                                   "id": "[concat(resourceId('Microsoft.Network/networkInterfaces',variables('nicName')), '/ipConfigurations/ipconfig1')]"
