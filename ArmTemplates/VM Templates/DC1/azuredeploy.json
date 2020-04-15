@@ -133,22 +133,22 @@
                       "name": "[variables('lbName')]",
                       "location": "[variables('location')]",
                       "properties": {
+                        "frontendIPConfigurations": [
+                            {
+                                "name": "LoadBalancerFrontEnd",
+                                "properties": {
+                                    "privateIPAllocationMethod": "Dynamic",
+                                    "publicIPAddress": {
+                                        "id": "[resourceId('Microsoft.Network/publicIPAddresses',variables('publicIPAddressName'))]"
+                                    },
+                                    "privateIPAddressVersion": "IPv4"
+                                }
+                            }
+                        ],
                         "backendAddressPools": [
                           {
                             "name": "[variables('RGName')]",
                             "properties": {
-                              "frontendIPConfigurations": [
-                                  {
-                                      "name": "LoadBalancerFrontEnd",
-                                      "properties": {
-                                          "privateIPAllocationMethod": "Dynamic",
-                                          "publicIPAddress": {
-                                              "id": "[resourceId('Microsoft.Network/publicIPAddresses',variables('publicIPAddressName'))]"
-                                          },
-                                          "privateIPAddressVersion": "IPv4"
-                                      }
-                                  }
-                              ],
                               "backendIPConfigurations": [
                                 {
                                   "id": "[concat(resourceId('Microsoft.Network/networkInterfaces',variables('nicName')), '/ipConfigurations/ipconfig1')]"
