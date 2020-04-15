@@ -6,7 +6,7 @@
     "variables": {
       "location": "[resourceGroup().location]",
       "subScriptionID": "[subscription().subScriptionID]",
-      "snapshots_externalid": "/subscriptions/dad08713-2fe7-44c6-b4f5-301d727f307d/resourceGroups/Trn_Lab_DCrepl_001/providers/Microsoft.Compute/snapshots/TrnLabDCreplDC1_snap041020",
+      "snapshots_externalid": "[resourceId('Trn_Lab_DCrepl_001', 'Microsoft.Compute/snapshots', 'TrnLabDCreplDC1_snap041020')]",
       "vmName": "DC1",
       "osType": "Windows",
       "vmSize": "Standard_A2_v2",
