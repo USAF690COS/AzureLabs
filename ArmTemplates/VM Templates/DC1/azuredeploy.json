@@ -132,6 +132,9 @@
                       "apiVersion": "2019-11-01",
                       "name": "[variables('lbName')]",
                       "location": "[variables('location')]",
+                      "sku": {
+                        "name": "Standard"
+                      },
                       "properties": {
                         "frontendIPConfigurations": [
                             {
