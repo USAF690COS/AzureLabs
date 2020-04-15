@@ -121,9 +121,7 @@
           "apiVersion": "2017-05-10",
           "name": "NATConfigurations",
           "resourceGroup": "[variables('lbRG')]",
-          "dependsOn": [
-              "[resourceId('Microsoft.Network/networkInterfaces',variables('nicName'))]"
-          ],
+          "dependsOn": [],
           "properties": {
               "expressionEvaluationOptions": {
                   "scope": "outer"
