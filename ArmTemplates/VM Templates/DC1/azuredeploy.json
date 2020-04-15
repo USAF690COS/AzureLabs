@@ -121,7 +121,6 @@
           "apiVersion": "2017-05-10",
           "name": "NATConfigurations",
           "resourceGroup": "[variables('lbRG')]",
-          "dependsOn": [],
           "properties": {
               "expressionEvaluationOptions": {
                   "scope": "outer"
