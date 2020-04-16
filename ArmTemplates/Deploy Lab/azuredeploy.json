@@ -3,16 +3,42 @@
     "contentVersion": "1.0.0.0",
     "parameters": {
         "userName": {
-            "type": "string"
+            "type": "string",
+            "metadata": {
+                "description": "Unique User Name"
+            }
         },
         "location": {
-            "type": "string"
+            "type": "string",
+            "allowedValues": [
+                "westus",
+                "westus2"
+            ],                
+            "metadata": {
+                "description": "Lab deployment region"
+            }
         },
         "labType": {
-            "type": "string"
+            "type": "string",
+            "allowedValues": [
+                "DSO",
+                "VRO"
+            ],    
+            "metadata": {
+                "description": "Lab operator role type"
+            }
+
         },
         "labName": {
-            "type": "string"
+            "type": "string",
+            "allowedValues": [
+                "DCPromo",
+                "DC1"
+            ],            
+            "metadata": {
+                "description": "Lab scenario name"
+            }
+
         },
         "utcValue": {
             "type": "string",
