@@ -4,54 +4,35 @@
     "parameters": {
     },
     "variables": {
+      "rgName": "[resourceGroup().name]",
       "location": "[resourceGroup().location]",
-      "snapshots_externalid": "/subscriptions/dad08713-2fe7-44c6-b4f5-301d727f307d/resourceGroups/Trn_Lab_DCrepl_001/providers/Microsoft.Compute/snapshots/TrnLabDCreplDC2_snap041020",
+      "snapshots_externalid": "/subscriptions/dad08713-2fe7-44c6-b4f5-301d727f307d/resourceGroups/DeployFromSnapshot/providers/Microsoft.Compute/snapshots/RDGatewaySnapshot",
       "vmName": "DC2",
       "osType": "Windows",
       "vmSize": "Standard_A2_v2",
-      "vnetPrefix": "vnet",
-      "existingVirtualNetworkName": "[concat(variables('vnetPrefix'), uniqueString(resourceGroup().id))]",
-      "existingVirtualNetworkResourceGroup": "[resourceGroup().name]",
+      "virtualNetworkName": "[concat('vnet-',variables('rgName'))]",
       "subnetName": "Subnet1",
-      "resourceTags": "[resourceGroup().tags]",
-      "diagStorageAccountName": "[toLower(concat(variables('vmName'), 'diag', uniqueString(resourceGroup().id)))]",
-      "publicIPAddressType": "Dynamic",
-      "subnetRef": "[resourceId(variables('existingVirtualNetworkResourceGroup'), 'Microsoft.Network/virtualNetworks/subnets', variables('existingVirtualNetworkName'),  variables('subnetName'))]",
+      "subnetRef": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworkName'),  variables('subnetName'))]",
       "nicName": "[concat(variables('vmName'), '-nic1')]",
-      "privateIPAddress": "10.10.0.12",
-      "publicIPAddressName": "[concat(variables('vmName'), '-pip')]"
+      "lastOctetIP": "12",
+      "lbNATPort": "[concat('600', variables('lastOctetIP'))]",
+      "lbNATRuleName": "[concat(variables('vmName'), '-NAT-In')]",
+      "privateIPAddress": "[concat('10.10.0.', variables('lastOctetIP'))]",
+      "publicIPAddressName": "[concat('PIP-', variables('rgName'))]",
+      "lbName": "[concat('LB-', variables('rgName'))]",
+      "availabilitySetName": "[concat('AS-', variables('rgName'))]",
+      "resourceTags": "[resourceGroup().tags]"
     },
     "resources": [
-      {
-        "apiVersion": "2018-02-01",
-        "type": "Microsoft.Storage/storageAccounts",
-        "name": "[variables('diagStorageAccountName')]",
-        "location": "[variables('location')]",
-        "sku": {
-          "name": "Standard_GRS"
-        },
-        "kind": "Storage",
-        "properties": {}
-      },
-      {
-        "apiVersion": "2015-06-15",
-        "type": "Microsoft.Network/publicIPAddresses",
-        "name": "[variables('publicIPAddressName')]",
-        "location": "[variables('location')]",
-        "tags": "[variables('resourceTags')]",
-        "properties": {
-          "publicIPAllocationMethod": "[variables('publicIPAddressType')]"
-        }
-      },
       {
         "apiVersion": "2015-06-15",
         "type": "Microsoft.Network/networkInterfaces",
         "name": "[variables('nicName')]",
         "location": "[variables('location')]",
-        "dependsOn": [
-          "[concat('Microsoft.Network/publicIPAddresses/', variables('publicIPAddressName'))]"
-        ],
         "tags": "[variables('resourceTags')]",
+        "dependsOn": [
+          "[resourceId('Microsoft.Network/loadBalancers', variables('lbName'))]"
+        ],
         "properties": {
           "ipConfigurations": [
             {
@@ -61,7 +42,17 @@
                 "privateIPAddress": "[variables('privateIPAddress')]",
                 "subnet": {
                   "id": "[variables('subnetRef')]"
-                }
+                },
+                "loadBalancerBackendAddressPools": [
+                  {
+                    "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('lbName')), '/backendAddressPools/', variables('rgName'))]"
+                  }
+                ],
+                "loadBalancerInboundNatRules": [
+                  {
+                    "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('lbName')), '/inboundNatRules/', variables('vmName'), '-NAT-In')]"
+                  }
+                ]
               }
             }
           ]
@@ -102,6 +93,9 @@
           "[concat(variables('vmName'), '_OSdisk')]"
         ],
         "properties": {
+          "availabilitySet": {
+            "id": "[resourceId('Microsoft.Compute/availabilitySets',variables('availabilitySetName'))]"
+          },
           "hardwareProfile": {
             "vmSize": "[variables('vmSize')]"
           },
@@ -123,6 +117,50 @@
             ]
           }
         }
+      },
+      {
+        "apiVersion": "2019-11-01",
+        "type": "Microsoft.Network/loadBalancers",
+        "name": "[variables('lbName')]",
+        "location": "[variables('location')]",
+        "tags": "[variables('resourceTags')]",
+        "sku": {
+            "name": "Basic"
+        },
+        "properties": {
+            "frontendIPConfigurations": [
+                {
+                    "name": "LoadBalancerFrontEnd",
+                    "properties": {
+                        "publicIPAddress": {
+                            "id": "[resourceId('Microsoft.Network/publicIPAddresses',variables('publicIPAddressName'))]"
+                        }
+                    }
+                }
+            ],
+            "backendAddressPools": [
+                {
+                    "name": "[variables('RGName')]"
+                }
+            ]
+        }
+      },
+      {
+        "apiVersion": "2019-11-01",
+        "type": "Microsoft.Network/loadBalancers/inboundNatRules",
+        "name": "[concat(variables('lbName'), '/', variables('lbNATRuleName'))]",
+        "location": "[variables('location')]",
+        "properties": {
+          "frontendIPConfiguration": {
+              "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('lbName')), '/frontendIPConfigurations/LoadBalancerFrontEnd')]"
+          },
+          "frontendPort": "[variables('lbNATPort')]",
+          "backendPort": 3389,
+          "enableFloatingIP": false,
+          "idleTimeoutInMinutes": 4,
+          "protocol": "Tcp",
+          "enableTcpReset": false
+        }
       }
     ]
-  }
+}

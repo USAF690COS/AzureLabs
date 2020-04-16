@@ -9,7 +9,7 @@
         {
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2017-05-10",
-            "name": "DC1VMDeployment",
+            "name": "[concat(resourceGroup().name, '-DC1VMDeployment')]",
             "resourceGroup": "[resourceGroup().name]",
             "properties": {
                 "mode": "Incremental",
@@ -22,7 +22,7 @@
         {
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2017-05-10",
-            "name": "DC2VMDeployment",
+            "name": "[concat(resourceGroup().name, '-DC2VMDeployment')]",
             "resourceGroup": "[resourceGroup().name]",
             "properties": {
                 "mode": "Incremental",
