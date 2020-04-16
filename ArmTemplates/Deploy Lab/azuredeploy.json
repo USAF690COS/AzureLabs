@@ -112,7 +112,7 @@
                             "location": "[variables('location')]",
                             "tags": "[variables('resourceTags')]",
                             "sku": {
-                                "name": "Standard"
+                                "name": "Basic"
                             },
                             "dependsOn": [
                                 "[concat('Microsoft.Network/publicIPAddresses/', variables('publicIPAddressName'))]"

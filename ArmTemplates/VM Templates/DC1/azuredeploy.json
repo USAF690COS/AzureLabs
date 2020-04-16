@@ -119,9 +119,6 @@
         "name": "[variables('lbName')]",
         "location": "[variables('location')]",
         "tags": "[variables('resourceTags')]",
-        "sku": {
-          "name": "Standard"
-        },
         "dependsOn": [
         ],
         "properties": {
