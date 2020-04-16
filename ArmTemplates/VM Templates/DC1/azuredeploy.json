@@ -18,6 +18,7 @@
       "lbNATPort": "[concat('600', variables('lastOctetIP'))]",
       "lbNATRuleName": "[concat(variables('vmName'), '-NAT-In')]",
       "privateIPAddress": "[concat('10.10.0.', variables('lastOctetIP'))]",
+      "publicIPAddressName": "[concat('PIP-', variables('rgName'))]",
       "lbName": "[concat('LB-', variables('rgName'))]",
       "availabilitySetName": "[concat('AS-', variables('rgName'))]",
       "resourceTags": "[resourceGroup().tags]"
@@ -115,6 +116,33 @@
               }
             ]
           }
+        }
+      },
+      {
+        "apiVersion": "2019-11-01",
+        "type": "Microsoft.Network/loadBalancers",
+        "name": "[variables('lbName')]",
+        "location": "[variables('location')]",
+        "tags": "[variables('resourceTags')]",
+        "sku": {
+            "name": "Basic"
+        },
+        "properties": {
+            "frontendIPConfigurations": [
+                {
+                    "name": "LoadBalancerFrontEnd",
+                    "properties": {
+                        "publicIPAddress": {
+                            "id": "[resourceId('Microsoft.Network/publicIPAddresses',variables('publicIPAddressName'))]"
+                        }
+                    }
+                }
+            ],
+            "backendAddressPools": [
+                {
+                    "name": "[variables('RGName')]"
+                }
+            ]
         }
       },
       {
