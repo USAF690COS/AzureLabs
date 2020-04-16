@@ -28,7 +28,7 @@
         "location": "[variables('location')]",
         "tags": "[variables('resourceTags')]",
         "dependsOn": [
-          "[concat(resourceId('Microsoft.Network/loadBalancers', variables('lbName')), '/inboundNatRules/', variables('vmName'), '-NAT-In')]"
+          "[resourceId('Microsoft.Network/loadBalancers', variables('lbName'))]"
         ],
         "properties": {
           "ipConfigurations": [
