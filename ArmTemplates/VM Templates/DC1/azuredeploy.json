@@ -120,11 +120,9 @@
       {
         "apiVersion": "2019-11-01",
         "type": "Microsoft.Network/loadBalancers/inboundNatRules",
-        "name": "[variables('lbNATRuleName')]",
+        "name": "[concat(variables('lbName'), '/', variables('lbNATRuleName'))]",
         "location": "[variables('location')]",
         "tags": "[variables('resourceTags')]",
-        "dependsOn": [
-        ],
         "properties": {
           "frontendIPConfiguration": {
               "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('lbName')), '/frontendIPConfigurations/LoadBalancerFrontEnd')]"
