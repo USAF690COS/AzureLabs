@@ -17,6 +17,7 @@
       "lastOctetIP": "11",
       "lbNATPort": "[concat('600', variables('lastOctetIP'))]",
       "privateIPAddress": "[concat('10.10.0.', variables('lastOctetIP'))]",
+      "publicIPAddressName": "[concat('PIP-', variables('rgName'))]",
       "lbName": "[concat('LB-', variables('rgName'))]",
       "resourceTags": "[resourceGroup().tags]"
     },
@@ -126,7 +127,12 @@
         "properties": {
             "frontendIPConfigurations": [
               {
-                  "name": "LoadBalancerFrontEnd"
+                  "name": "LoadBalancerFrontEnd",
+                  "properties": {
+                      "publicIPAddress": {
+                          "id": "[resourceId('Microsoft.Network/publicIPAddresses',variables('publicIPAddressName'))]"
+                      }
+                  }
               }
             ],
             "backendAddressPools": [
