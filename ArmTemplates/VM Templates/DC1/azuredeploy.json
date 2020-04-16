@@ -150,7 +150,6 @@
         "type": "Microsoft.Network/loadBalancers/inboundNatRules",
         "name": "[concat(variables('lbName'), '/', variables('lbNATRuleName'))]",
         "location": "[variables('location')]",
-        "tags": "[variables('resourceTags')]",
         "properties": {
           "frontendIPConfiguration": {
               "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('lbName')), '/frontendIPConfigurations/LoadBalancerFrontEnd')]"
