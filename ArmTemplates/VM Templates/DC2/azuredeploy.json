@@ -6,7 +6,7 @@
     "variables": {
       "rgName": "[resourceGroup().name]",
       "location": "[resourceGroup().location]",
-      "snapshots_externalid": "/subscriptions/dad08713-2fe7-44c6-b4f5-301d727f307d/resourceGroups/Trn_Lab_DCrepl_001/providers/Microsoft.Compute/snapshots/TrnLabDCreplDC2_snap041020",
+      "snapshots_externalid": "/subscriptions/dad08713-2fe7-44c6-b4f5-301d727f307d/resourceGroups/VM_Image_VHDs/providers/Microsoft.Compute/snapshots/DC2_Snap",
       "vmName": "DC2",
       "osType": "Windows",
       "vmSize": "Standard_B2s",
