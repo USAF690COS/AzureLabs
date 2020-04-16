@@ -16,9 +16,10 @@
       "nicName": "[concat(variables('vmName'), '-nic1')]",
       "lastOctetIP": "11",
       "lbNATPort": "[concat('600', variables('lastOctetIP'))]",
+      "lbNATRuleName": "[concat(variables('vmName'), '-NAT-In')]",
       "privateIPAddress": "[concat('10.10.0.', variables('lastOctetIP'))]",
-      "publicIPAddressName": "[concat('PIP-', variables('rgName'))]",
       "lbName": "[concat('LB-', variables('rgName'))]",
+      "availabilitySetName": "[concat('AS-', variables('rgName'))]",
       "resourceTags": "[resourceGroup().tags]"
     },
     "resources": [
@@ -91,6 +92,9 @@
           "[concat(variables('vmName'), '_OSdisk')]"
         ],
         "properties": {
+          "availabilitySet": {
+            "id": "[resourceId('Microsoft.Compute/availabilitySets',variables('availabilitySetName'))]"
+          },
           "hardwareProfile": {
             "vmSize": "[variables('vmSize')]"
           },
@@ -115,47 +119,22 @@
       },
       {
         "apiVersion": "2019-11-01",
-        "type": "Microsoft.Network/loadBalancers",
-        "name": "[variables('lbName')]",
+        "type": "Microsoft.Network/loadBalancers/inboundNatRules",
+        "name": "[variables('lbNATRuleName')]",
         "location": "[variables('location')]",
         "tags": "[variables('resourceTags')]",
         "dependsOn": [
         ],
         "properties": {
-            "frontendIPConfigurations": [
-              {
-                  "name": "LoadBalancerFrontEnd",
-                  "properties": {
-                      "publicIPAddress": {
-                          "id": "[resourceId('Microsoft.Network/publicIPAddresses',variables('publicIPAddressName'))]"
-                      }
-                  }
-              }
-            ],
-            "backendAddressPools": [
-            {
-                "name": "[variables('RGName')]"
-            }
-            ],
-            "loadBalancingRules": [],
-            "probes": [],
-            "inboundNatRules": [
-            {
-                "name": "[concat(variables('vmName'), '-NAT-In')]",
-                "properties": {
-                "frontendIPConfiguration": {
-                    "id": "[concat(resourceId(variables('rgName'), 'Microsoft.Network/loadBalancers', variables('lbName')), '/frontendIPConfigurations/LoadBalancerFrontEnd')]"
-                },
-                "frontendPort": "[variables('lbNATPort')]",
-                "backendPort": 3389,
-                "enableFloatingIP": false,
-                "idleTimeoutInMinutes": 4,
-                "protocol": "Tcp",
-                "enableTcpReset": false
-                }
-            }
-            ],
-            "inboundNatPools": []
+          "frontendIPConfiguration": {
+              "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('lbName')), '/frontendIPConfigurations/LoadBalancerFrontEnd')]"
+          },
+          "frontendPort": "[variables('lbNATPort')]",
+          "backendPort": 3389,
+          "enableFloatingIP": false,
+          "idleTimeoutInMinutes": 4,
+          "protocol": "Tcp",
+          "enableTcpReset": false
         }
       }
     ]
