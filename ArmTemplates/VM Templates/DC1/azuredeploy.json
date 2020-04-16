@@ -4,25 +4,21 @@
     "parameters": {
     },
     "variables": {
+      "rgName": "[resourceGroup().name]",
       "location": "[resourceGroup().location]",
-      "subScriptionID": "[subscription().subScriptionID]",
       "snapshots_externalid": "[resourceId('Trn_Lab_DCrepl_001', 'Microsoft.Compute/snapshots', 'TrnLabDCreplDC1_snap041020')]",
       "vmName": "DC1",
       "osType": "Windows",
       "vmSize": "Standard_A2_v2",
-      "vnetPrefix": "vnet",
-      "existingVirtualNetworkName": "[concat(variables('vnetPrefix'), uniqueString(resourceGroup().id))]",
-      "existingVirtualNetworkResourceGroup": "[resourceGroup().name]",
+      "virtualNetworkName": "[concat('vnet-',variables('rgName'))]",
       "subnetName": "Subnet1",
-      "resourceTags": "[resourceGroup().tags]",
-      "publicIPAddressType": "Dynamic",
-      "subnetRef": "[resourceId(variables('existingVirtualNetworkResourceGroup'), 'Microsoft.Network/virtualNetworks/subnets', variables('existingVirtualNetworkName'),  variables('subnetName'))]",
+      "subnetRef": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworkName'),  variables('subnetName'))]",
       "nicName": "[concat(variables('vmName'), '-nic1')]",
-      "privateIPAddress": "10.10.0.11",
-      "lbName": "[concat('LBPublic-690-', resourceGroup().location)]",
-      "lbRG": "[concat('LBResources-', resourceGroup().location)]",
-      "publicIPaddressName": "[concat('IPPublic-690-', resourceGroup().location)]",
-      "rgName": "[resourceGroup().name]" 
+      "lastOctetIP": "11",
+      "lbNATPort": "[concat('600', variables('lastOctetIP'))]",
+      "privateIPAddress": "[concat('10.10.0.', variables('lastOctetIP'))]",
+      "lbName": "[concat('LB-', variables('rgName'))]",
+      "resourceTags": "[resourceGroup().tags]"
     },
     "resources": [
       {
@@ -32,7 +28,7 @@
         "location": "[variables('location')]",
         "tags": "[variables('resourceTags')]",
         "dependsOn": [
-          "NATConfigurations"
+          "[concat(resourceId('Microsoft.Network/loadBalancers', variables('lbName')), '/inboundNatRules/', variables('vmName'), '-NAT-In')]"
         ],
         "properties": {
           "ipConfigurations": [
@@ -46,12 +42,12 @@
                 },
                 "loadBalancerBackendAddressPools": [
                   {
-                    "id": "[concat(resourceId(variables('lbRG'), 'Microsoft.Network/loadBalancers', variables('lbName')), '/backendAddressPools/', variables('rgName'))]"
+                    "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('lbName')), '/backendAddressPools/', variables('rgName'))]"
                   }
                 ],
                 "loadBalancerInboundNatRules": [
                   {
-                    "id": "[concat(resourceId(variables('lbRG'), 'Microsoft.Network/loadBalancers', variables('lbName')), '/inboundNatRules/', variables('vmName'), variables('rgName'), '-NAT-In')]"
+                    "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('lbName')), '/inboundNatRules/', variables('vmName'), '-NAT-In')]"
                   }
                 ]
               }
@@ -117,76 +113,47 @@
         }
       },
       {
-          "type": "Microsoft.Resources/deployments",
-          "apiVersion": "2017-05-10",
-          "name": "NATConfigurations",
-          "resourceGroup": "[variables('lbRG')]",
-          "properties": {
-              "expressionEvaluationOptions": {
-                  "scope": "outer"
-              },
-              "mode": "Incremental",
-              "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
-                  "contentVersion": "1.0.0.0",
-                  "parameters": {},    
-                  "variables": {
-                    "lbName": "[concat('LBPublic-690-', resourceGroup().location)]",
-                    "lbRG": "[concat('LBResources-', resourceGroup().location)]",
-                    "location": "[resourceGroup().location]",
-                    "resourceTags": "[resourceGroup().tags]"
-                  },
-                  "resources": [
-                    {
-                      "type": "Microsoft.Network/loadBalancers",
-                      "apiVersion": "2019-11-01",
-                      "name": "[variables('lbName')]",
-                      "location": "[variables('location')]",
-                      "sku": {
-                        "name": "Standard"
-                      },
-                      "properties": {
-                        "frontendIPConfigurations": [
-                            {
-                                "name": "LoadBalancerFrontEnd",
-                                "properties": {
-                                    "privateIPAllocationMethod": "Dynamic",
-                                    "publicIPAddress": {
-                                        "id": "[resourceId(variables('lbRG'), 'Microsoft.Network/publicIPAddresses',variables('publicIPAddressName'))]"
-                                    },
-                                    "privateIPAddressVersion": "IPv4"
-                                }
-                            }
-                        ],
-                        "backendAddressPools": [
-                          {
-                            "name": "[variables('RGName')]"
-                          }
-                        ],
-                        "loadBalancingRules": [],
-                        "probes": [],
-                        "inboundNatRules": [
-                          {
-                            "name": "[concat(variables('vmName'), resourceGroup().name, '-NAT-In')]",
-                            "properties": {
-                              "frontendIPConfiguration": {
-                                "id": "[concat(resourceId(variables('lbRG'), 'Microsoft.Network/loadBalancers', variables('lbName')), '/frontendIPConfigurations/LoadBalancerFrontEnd')]"
-                              },
-                              "frontendPort": 63415,
-                              "backendPort": 3389,
-                              "enableFloatingIP": false,
-                              "idleTimeoutInMinutes": 4,
-                              "protocol": "Tcp",
-                              "enableTcpReset": false
-                            }
-                          }
-                        ],
-                        "inboundNatPools": []
-                      }
-                    }
-                  ]
-                }                    
-          }
+        "apiVersion": "2019-11-01",
+        "type": "Microsoft.Network/loadBalancers",
+        "name": "[variables('lbName')]",
+        "location": "[variables('location')]",
+        "tags": "[variables('resourceTags')]",
+        "sku": {
+          "name": "Standard"
+        },
+        "dependsOn": [
+        ],
+        "properties": {
+            "frontendIPConfigurations": [
+              {
+                  "name": "LoadBalancerFrontEnd"
+              }
+            ],
+            "backendAddressPools": [
+            {
+                "name": "[variables('RGName')]"
+            }
+            ],
+            "loadBalancingRules": [],
+            "probes": [],
+            "inboundNatRules": [
+            {
+                "name": "[concat(variables('vmName'), '-NAT-In')]",
+                "properties": {
+                "frontendIPConfiguration": {
+                    "id": "[concat(resourceId(variables('rgName'), 'Microsoft.Network/loadBalancers', variables('lbName')), '/frontendIPConfigurations/LoadBalancerFrontEnd')]"
+                },
+                "frontendPort": "[variables('lbNATPort')]",
+                "backendPort": 3389,
+                "enableFloatingIP": false,
+                "idleTimeoutInMinutes": 4,
+                "protocol": "Tcp",
+                "enableTcpReset": false
+                }
+            }
+            ],
+            "inboundNatPools": []
         }
+      }
     ]
 }

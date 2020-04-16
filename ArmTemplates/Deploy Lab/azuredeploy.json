@@ -20,14 +20,16 @@
         }
     },
     "variables": {
-        "rgPrefix": "RG",
-        "labDeploymentName": "[concat(parameters('labName'), 'LabDeployment')]",
         "randomInt": "[substring(uniqueString(parameters('utcValue')),0,6)]",
         "labDeployURL": "[concat('https://raw.githubusercontent.com/USAF690COS/AzureLabs/master/ArmTemplates/', parameters('labType'), '/', parameters('labName'), '/azuredeploy.json')]",
-        "rgName": "[concat(variables('rgPrefix'), parameters('userName') ,parameters('labType'), variables('randomInt'))]",
+        "rgName": "[concat('Lab-', parameters('userName') , '-', parameters('labName'))]",
+        "labDeploymentName": "[concat(variables('rgName'), '-LabDeployment')]",
+        "publicIPAddressName": "[concat('PIP-', variables('rgName'))]",
+        "publicIPAddressType": "Dynamic",
         "resourceTags": {
             "CreatedBy": "[parameters('userName')]",
-            "LabType": "[parameters('labType')]"
+            "LabType": "[parameters('labType')]",
+            "LabName": "[parameters('labName')]"
         }
     },
     "resources": [
@@ -42,7 +44,7 @@
         {
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2017-05-10",
-            "name": "VNETDeployment",
+            "name": "[concat(variables('rgName'), '-NetworkDeployment')]",
             "resourceGroup": "[variables('rgName')]",
             "dependsOn": [
                 "[resourceId('Microsoft.Resources/resourceGroups/', variables('rgName'))]"
@@ -58,9 +60,9 @@
                     "parameters": {},
                     "variables": {
                         "location": "[resourceGroup().location]",
-                        "vnetPrefix": "vnet",
-                        "virtualNetworkName": "[concat(variables('vnetPrefix'), uniqueString(resourceGroup().id))]",
-                        "resourceTags": "[resourceGroup().tags]"
+                        "virtualNetworkName": "[concat('vnet-',variables('rgName'))]",
+                        "resourceTags": "[resourceGroup().tags]",
+                        "lbName": "[concat('LB-', variables('rgName'))]"
                     },
                     "resources": [
                         {
@@ -91,6 +93,52 @@
                                     }
                                 ]
                             }
+                        },
+                        {
+                            "apiVersion": "2015-06-15",
+                            "type": "Microsoft.Network/publicIPAddresses",
+                            "name": "[variables('publicIPAddressName')]",
+                            "location": "[variables('location')]",
+                            "tags": "[variables('resourceTags')]",
+                            "properties": {
+                                "publicIPAllocationMethod": "[variables('publicIPAddressType')]"
+                            }
+                        },
+                        {
+                            "apiVersion": "2019-11-01",
+                            "type": "Microsoft.Network/loadBalancers",
+                            "name": "[variables('lbName')]",
+                            "location": "[variables('location')]",
+                            "tags": "[variables('resourceTags')]",
+                            "sku": {
+                                "name": "Standard"
+                            },
+                            "dependsOn": [
+                                "[concat('Microsoft.Network/publicIPAddresses/', variables('publicIPAddressName'))]"
+                            ],
+                            "properties": {
+                                "frontendIPConfigurations": [
+                                    {
+                                        "name": "LoadBalancerFrontEnd",
+                                        "properties": {
+                                            "privateIPAllocationMethod": "Dynamic",
+                                            "publicIPAddress": {
+                                                "id": "[resourceId('Microsoft.Network/publicIPAddresses',variables('publicIPAddressName'))]"
+                                            },
+                                            "privateIPAddressVersion": "IPv4"
+                                        }
+                                    }
+                                ],
+                                "backendAddressPools": [
+                                    {
+                                        "name": "[variables('RGName')]"
+                                    }
+                                ],
+                                "loadBalancingRules": [],
+                                "probes": [],
+                                "inboundNatRules": [],
+                                "inboundNatPools": []
+                            }
                         }
                     ],
                     "outputs": {}
@@ -105,12 +153,12 @@
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                "uri": "[variables('labDeployURL')]",
-                "contentVersion":"1.0.0.0"
+                    "uri": "[variables('labDeployURL')]",
+                    "contentVersion":"1.0.0.0"
                 }
             },
             "dependsOn": [
-                "VNETDeployment",
+                "[concat(variables('rgName'), '-NetworkDeployment')]",
                 "[resourceId('Microsoft.Resources/resourceGroups/', variables('rgName'))]"
             ]
         }

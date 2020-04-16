@@ -60,9 +60,6 @@
               "properties": {
                 "privateIPAllocationMethod": "Static",
                 "privateIPAddress": "[variables('privateIPAddress')]",
-                "publicIPAddress": {
-                  "id": "[resourceId('Microsoft.Network/publicIPAddresses',variables('publicIPAddressName'))]"
-                },
                 "subnet": {
                   "id": "[variables('subnetRef')]"
                 }
@@ -125,12 +122,6 @@
                 "id": "[resourceId('Microsoft.Network/networkInterfaces',variables('nicName'))]"
               }
             ]
-          },
-          "diagnosticsProfile": {
-            "bootDiagnostics": {
-              "enabled":  true ,
-              "storageUri": "[concat(reference(concat('Microsoft.Storage/storageAccounts/', variables('diagStorageAccountName')), '2016-01-01').primaryEndpoints.blob)]"
-            }
           }
         }
       }
