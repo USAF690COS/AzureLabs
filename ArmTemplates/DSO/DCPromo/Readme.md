@@ -1,2 +1,6 @@
 # DCPromo Lab Template
-LInked VM deployments for each VM required for the DCPromo Lab configuration.
+Linked VM deployments for each VM required for the DCPromo Lab configuration.
+
+VM List:
+DC1
+DC2

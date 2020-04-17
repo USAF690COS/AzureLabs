@@ -1,2 +1,2 @@
 # DSO Lab Templates
-ARM Deployment Templates DSO Lab environments.
+ARM Deployment Templates for DSO Lab environments.
