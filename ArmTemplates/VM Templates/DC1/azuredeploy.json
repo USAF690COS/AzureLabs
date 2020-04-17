@@ -32,7 +32,7 @@
         "tags": "[variables('resourceTags')]",
         "dependsOn": [
           "[resourceId('Microsoft.Network/loadBalancers', variables('lbName'))]",
-          "[resourceId('Microsoft.Network/loadBalancers/inboundNatRules', concat(variables('lbName'), '/', variables('lbNATRuleName')))]"
+          "[concat(resourceId('Microsoft.Network/loadBalancers', variables('lbName')), '/inboundNatRules/', variables('vmName'), '-NAT-In')]"
         ],
         "properties": {
           "ipConfigurations": [
