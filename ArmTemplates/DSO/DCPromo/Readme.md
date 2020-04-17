@@ -1,6 +1,3 @@
 # DCPromo Lab Template
-Linked VM deployments for each VM required for the DCPromo Lab configuration.
-
-VM List:
-DC1
-DC2
+This folder is no longer used. Functionality has been moved to paramter files and single deployment template here:
+https://github.com/USAF690COS/AzureLabs/tree/master/ArmTemplates/LabDefinitions
