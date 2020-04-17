@@ -47,8 +47,9 @@
     },
     "variables": {
         "randomInt": "[substring(uniqueString(parameters('utcValue')),0,6)]",
+        "lcaseLabName": "[toLower(parameters('labName'))]",
         "labDeployTemplateURL": "[concat('https://raw.githubusercontent.com/USAF690COS/AzureLabs/master/ArmTemplates/LabDefinitions/azuredeploy.json')]",
-        "labDeployParametersURL": "[concat('https://raw.githubusercontent.com/USAF690COS/AzureLabs/master/ArmTemplates/LabDefinitions/azuredeploy.parameters.', parameters('labName'), '.json')]", 
+        "labDeployParametersURL": "[concat('https://raw.githubusercontent.com/USAF690COS/AzureLabs/master/ArmTemplates/LabDefinitions/azuredeploy.parameters.', variables('lcaseLabName'), '.json')]", 
         "rgName": "[concat('Lab-', parameters('userName') , '-', parameters('labName'))]",
         "labDeploymentName": "[concat(variables('rgName'), '-LabDeployment')]",
         "resourceTags": {
