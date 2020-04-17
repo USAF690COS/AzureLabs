@@ -2,4 +2,4 @@ $templateParamterUri = "https://raw.githubusercontent.com/USAF690COS/AzureLabs/m
 $templateParamterFile = "C:\git\AzureLabs\ArmTemplates\Deploy Lab\azuredeploy.parameters.json"
 $templateUri = "https://raw.githubusercontent.com/USAF690COS/AzureLabs/master/ArmTemplates/Deploy%20Lab/azuredeploy.json"
 
-New-AzSubscriptionDeployment -Location 'westus2' -name 'LabTestWestUS2' -TemplateUri $templateUri -TemplateParameterFile $templateParamterFile
+New-AzSubscriptionDeployment -Location 'westus' -name 'LabDeployWestUS' -TemplateUri $templateUri -TemplateParameterFile $templateParamterFile

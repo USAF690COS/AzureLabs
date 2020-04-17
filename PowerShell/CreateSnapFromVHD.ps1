@@ -6,7 +6,7 @@ $SubscriptionId = $subscription.Id
 $resourceGroupName ='VM_Image_VHDs'
 
 #Provide the name of the snapshot
-$snapshotName = 'DC2_Snap'
+$snapshotName = 'DC1_Snap'
 
 #Provide the storage type for snapshot. PremiumLRS or StandardLRS.
 $storageType = 'Standard_LRS'
@@ -20,7 +20,7 @@ $location = 'westus'
 #Provide the URI of the VHD file (page blob) in a storage account. Please not that this is NOT the SAS URI of the storage container where VHD file is stored. 
 #e.g. https://contosostorageaccount1.blob.core.windows.net/vhds/contosovhd123.vhd
 #Note: VHD file can be deleted as soon as Managed Disk is created.
-$sourceVHDURI = 'https://vmimagevhds.blob.core.windows.net/vmimages/DC2.vhd'
+$sourceVHDURI = 'https://vmimagevhds.blob.core.windows.net/vmimages/DC1.vhd'
 
 #Provide the resource Id of the storage account where VHD file is stored. 
 #e.g. /subscriptions/6582b1g7-e212-446b-b509-314e17e1efb0/resourceGroups/MDDemo/providers/Microsoft.Storage/storageAccounts/contosostorageaccount1
@@ -30,6 +30,6 @@ $storageAccountId = '/subscriptions/dad08713-2fe7-44c6-b4f5-301d727f307d/resourc
 #Set the context to the subscription Id where Managed Disk will be created
 Select-AzSubscription -SubscriptionId $SubscriptionId
 
-$snapshotConfig = New-AzSnapshotConfig -AccountType $storageType -Location $location -CreateOption Import -StorageAccountId $storageAccountId -SourceUri $sourceVHDURI
+$snapshotConfig = New-AzSnapshotConfig -AccountType $storageType -Location $location -CreateOption Import -StorageAccountId $storageAccountId -SourceUri $sourceVHDURI -HyperVGeneration 'V2'
 
 New-AzSnapshot -Snapshot $snapshotConfig -ResourceGroupName $resourceGroupName -SnapshotName $snapshotName

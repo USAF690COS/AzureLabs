@@ -69,7 +69,7 @@
         },
         "properties": {
             "osType": "Windows",
-            "hyperVGeneration": "V1",
+            "hyperVGeneration": "V2",
             "creationData": {
                 "createOption": "Copy",
                 "sourceResourceId": "[variables('snapshots_externalid')]"
