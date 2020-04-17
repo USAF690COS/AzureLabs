@@ -3,7 +3,7 @@
     "contentVersion": "1.0.0.1",
     "parameters": {
       "userName": {
-        "value": "Dillon"
+        "value": "Dillonv2"
       },      
       "location": {
         "value": "westus"
