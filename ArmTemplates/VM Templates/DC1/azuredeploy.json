@@ -31,7 +31,8 @@
         "location": "[variables('location')]",
         "tags": "[variables('resourceTags')]",
         "dependsOn": [
-          "[resourceId('Microsoft.Network/loadBalancers', variables('lbName'))]"
+          "[resourceId('Microsoft.Network/loadBalancers', variables('lbName'))]",
+          "[resourceId('Microsoft.Network/loadBalancers/inboundNatRules', concat(variables('lbName'), '/', variables('lbNATRuleName')))]"
         ],
         "properties": {
           "ipConfigurations": [
