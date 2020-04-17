@@ -41,7 +41,7 @@
   </Style>
  </Styles>
  <Worksheet ss:Name="Sheet1">
-  <Table ss:ExpandedColumnCount="15" ss:ExpandedRowCount="41" x:FullColumns="1"
+  <Table ss:ExpandedColumnCount="15" ss:ExpandedRowCount="38" x:FullColumns="1"
    x:FullRows="1" ss:DefaultColumnWidth="51" ss:DefaultRowHeight="14.25">
    <Column ss:AutoFitWidth="0" ss:Width="175.875"/>
    <Column ss:AutoFitWidth="0" ss:Width="135.75"/>
@@ -324,9 +324,6 @@
     <Cell><Data ss:Type="String">Trn_Lab_DCrepl_001</Data></Cell>
     <Cell ss:Index="15"><Data ss:Type="String">Snapshot of TrnLabCMPS1 OS Disk as of 4/13/20</Data></Cell>
    </Row>
-   <Row ss:Index="41" ss:AutoFitHeight="0">
-    <Cell ss:Index="2"><Data ss:Type="String">Github sync test</Data></Cell>
-   </Row>
   </Table>
   <WorksheetOptions xmlns="urn:schemas-microsoft-com:office:excel">
    <PageSetup>
@@ -337,12 +334,10 @@
    <Unsynced/>
    <Selected/>
    <TopRowVisible>25</TopRowVisible>
-   <LeftColumnVisible>1</LeftColumnVisible>
    <Panes>
     <Pane>
      <Number>3</Number>
-     <ActiveRow>43</ActiveRow>
-     <ActiveCol>1</ActiveCol>
+     <ActiveRow>38</ActiveRow>
     </Pane>
    </Panes>
    <ProtectObjects>False</ProtectObjects>
