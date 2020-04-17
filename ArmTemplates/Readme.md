@@ -1,2 +1,2 @@
 # ArmTemplates
-ARM Deployment Templates Folder for VRO Operator position labs.
+ARM Deployment Templates Folder for for Azure Training &amp; Test labs for 690 COS.
