@@ -167,7 +167,7 @@
     "outputs": {
         "RDPConnection": {
             "type": "string",
-            "value": "[reference(resourceId(variables('rgName'),'Microsoft.Network/publicIPAddresses',variables('publicIPAddressName')), '2019-11-01').ipAddress]"
+            "value": "[reference(resourceId(variables('rgName'),'Microsoft.Network/publicIPAddresses',variables('publicIPAddressName')), '2019-11-01').ipConfiguration]"
         }
     }    
 }
