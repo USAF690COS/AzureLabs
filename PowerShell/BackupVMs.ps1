@@ -2,6 +2,7 @@
 # Need to update storageaccount key to use keyvault
 # need to modify loops - create all snapshots first (very fast), then loop through regions
 # to copy all snapshots to storage account in that region
+# - also fix storage context - needs to stay unique between storage accounts or copy fails
 
 $subscription = Get-AzSubscription
 $SubscriptionId = $subscription.Id
