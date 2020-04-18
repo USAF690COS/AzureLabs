@@ -163,5 +163,11 @@
           "enableTcpReset": false
         }
       }
-    ]
+    ],
+    "outputs": {
+        "RDPConnection": {
+            "type": "string",
+            "value": "[concat(reference(resourceId('Microsoft.Network/publicIPAddresses',variables('publicIPAddressName'))).ipAddress, ':', variables('lbNATPort'))]"
+        }
+    }    
 }
