@@ -167,7 +167,7 @@
     "outputs": {
         "RDPConnection": {
             "type": "string",
-            "value": "[concat(reference(resourceId(variables('rgName'),'Microsoft.Network/publicIPAddresses',variables('publicIPAddressName'))).ipAddress, ':', variables('lbNATPort'))]"
+            "value": "[concat(reference(resourceId(variables('rgName'),'Microsoft.Network/publicIPAddresses',variables('publicIPAddressName')), '2015-06-15').ipAddress, ':', variables('lbNATPort'))]"
         }
     }    
 }
