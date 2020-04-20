@@ -1,0 +1,19 @@
+# Use tags to tag vhd files when new ones created/copied
+# Use tags to search for updated vhds, label old master and new master
+# tags: new, restore, backup, old.... 
+
+
+For each region
+get storage account name
+find all vhds in storage container
+for each vm (name - like DC1*, etc)
+get latest vhd (neweest last modified timestamp)
+rename existing master snapshot (DC1_master) to _old (DC1_old_timestamp)
+create snapshot from latest vhd with master name (DC1_master)
+
+
+scheduler/automation
+run vmbackup script @time x
+run provisionSnapshot script @time x + 4 hours??
+if no new vhds (? check?) then do nothing
+if new vhd found, then provsion new snap (above)

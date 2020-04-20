@@ -6,7 +6,7 @@ $SubscriptionId = $subscription.Id
 $resourceGroupName ='VM_Image_VHDs'
 
 #Provide the name of the snapshot
-$snapshotName = 'DC1_Snap'
+$snapshotName = 'DC1_Snap'  
 
 #Provide the storage type for snapshot. PremiumLRS or StandardLRS.
 $storageType = 'Standard_LRS'
