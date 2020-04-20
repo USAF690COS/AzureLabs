@@ -20,8 +20,8 @@
   <AllowPNG/>
  </OfficeDocumentSettings>
  <ExcelWorkbook xmlns="urn:schemas-microsoft-com:office:excel">
-  <WindowHeight>6615</WindowHeight>
-  <WindowWidth>20213</WindowWidth>
+  <WindowHeight>11025</WindowHeight>
+  <WindowWidth>22500</WindowWidth>
   <WindowTopX>32767</WindowTopX>
   <WindowTopY>32767</WindowTopY>
   <ProtectStructure>False</ProtectStructure>
@@ -41,7 +41,7 @@
   </Style>
  </Styles>
  <Worksheet ss:Name="Sheet1">
-  <Table ss:ExpandedColumnCount="15" ss:ExpandedRowCount="38" x:FullColumns="1"
+  <Table ss:ExpandedColumnCount="15" ss:ExpandedRowCount="39" x:FullColumns="1"
    x:FullRows="1" ss:DefaultColumnWidth="51" ss:DefaultRowHeight="14.25">
    <Column ss:AutoFitWidth="0" ss:Width="175.875"/>
    <Column ss:AutoFitWidth="0" ss:Width="135.75"/>
@@ -323,6 +323,13 @@
     <Cell><Data ss:Type="String">West US 2</Data></Cell>
     <Cell><Data ss:Type="String">Trn_Lab_DCrepl_001</Data></Cell>
     <Cell ss:Index="15"><Data ss:Type="String">Snapshot of TrnLabCMPS1 OS Disk as of 4/13/20</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">TrnLabCMPS1_DataDisk0_snap041320</Data></Cell>
+    <Cell><Data ss:Type="String">Snapshot</Data></Cell>
+    <Cell><Data ss:Type="String">West US 2</Data></Cell>
+    <Cell><Data ss:Type="String">Trn_Lab_DCrepl_001</Data></Cell>
+    <Cell ss:Index="15"><Data ss:Type="String">Snapshot of DataDisk0 used by the SQL VM instance</Data></Cell>
    </Row>
   </Table>
   <WorksheetOptions xmlns="urn:schemas-microsoft-com:office:excel">
