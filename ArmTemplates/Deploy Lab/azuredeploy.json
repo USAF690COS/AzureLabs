@@ -215,6 +215,11 @@
         "ResourcGroupName": {
             "type": "string",
             "value": "[variables('rgName')]"
+        },
+        "ipConfigurations": {
+            "type": "array",
+            "value": "[reference(variables('labDeploymentName')).outputs.ipConfigurations.value]"
         }
     }
 }
+

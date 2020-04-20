@@ -162,5 +162,11 @@
           "enableTcpReset": false
         }
       }
-    ]
+    ],
+    "outputs": {
+        "PublicIPConfiguration": {
+            "type": "object",
+            "value": "[reference(resourceId(variables('rgName'),'Microsoft.Network/publicIPAddresses',variables('publicIPAddressName')), '2019-11-01').ipConfiguration]"
+        }
+    }       
 }

@@ -1,3 +1,8 @@
+# Use tags to tag vhd files when new ones created/copied
+# Use tags to search for updated vhds, label old master and new master
+# tags: new, restore, backup, old.... 
+
+
 For each region
 get storage account name
 find all vhds in storage container
