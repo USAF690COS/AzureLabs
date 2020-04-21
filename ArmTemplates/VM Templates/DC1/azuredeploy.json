@@ -165,6 +165,10 @@
       }
     ],
     "outputs": {
+        "VMName": {
+            "type": "string",
+            "value": "[variables('vmName')]"
+        },
         "PublicIPResourceID": {
             "type": "string",
             "value": "[resourceId(variables('rgName'),'Microsoft.Network/publicIPAddresses',variables('publicIPAddressName'))]"

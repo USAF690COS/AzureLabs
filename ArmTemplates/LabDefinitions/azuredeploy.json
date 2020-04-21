@@ -37,6 +37,7 @@
             "copy": {
                 "count": "[length(parameters('vmList'))]",
                 "input": {
+                    "VMName": "[reference(concat(resourceGroup().name, '-', parameters('vmList')[copyIndex()], '-VMDeployment')).outputs.VMName.value]",
                     "PublicIPResourceID": "[reference(concat(resourceGroup().name, '-', parameters('vmList')[copyIndex()], '-VMDeployment')).outputs.PublicIPResourceID.value]",
                     "VMPublicPort": "[reference(concat(resourceGroup().name, '-', parameters('vmList')[copyIndex()], '-VMDeployment')).outputs.VMPublicPort.value]"
                 }
