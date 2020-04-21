@@ -212,7 +212,7 @@
         }
     ],
     "outputs": {
-        "ResourcGroupName": {
+        "ResourceGroupName": {
             "type": "string",
             "value": "[variables('rgName')]"
         },

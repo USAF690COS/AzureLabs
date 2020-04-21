@@ -36,7 +36,10 @@
             "type": "array",
             "copy": {
                 "count": "[length(parameters('vmList'))]",
-                "input": "[reference(concat(resourceGroup().name, '-', parameters('vmList')[copyIndex()], '-VMDeployment')).outputs.PublicIPConfiguration.value]"
+                "input": {
+                    "PublicIPResourceID": "[reference(concat(resourceGroup().name, '-', parameters('vmList')[copyIndex()], '-VMDeployment')).outputs.PublicIPResourceID.value]",
+                    "VMPublicPort": "[reference(concat(resourceGroup().name, '-', parameters('vmList')[copyIndex()], '-VMDeployment')).outputs.VMPublicPort.value]"
+                }
             }
         }
     }      
