@@ -4,12 +4,12 @@ $subscription = Get-AzSubscription
 $SubscriptionId = $subscription.Id
 Select-AzSubscription -SubscriptionId $SubscriptionId
 
+$masterImageRG = "MasterImageSnapshots"
 $regions = "westus", "westus2"
-# $rgNamePrefix = "vmImages-"
-$vms = "DC1", "DC2"
+$vms = "TrnLabDCreplDC1", "TrnLabDCreplDC2", "TrnLabDCreplDH1", "TrnLabDCreplW10", "TrnLabCMW10-01", "TrnLabCMPS1"
 $storageAccountPrefix = "vmimagevhds"
-$sourceResourceGroupName = "Lab-Kevin-DCPromo"
-$location = "westus"
+$sourceResourceGroupName = "Trn_Lab_DCrepl_001"
+$location = "westus2"
 $destinationContext = @()
 $snapshotList = @()
 $sas = @()
@@ -23,8 +23,8 @@ ForEach ($vmName in $vms) {
     #Create Snapshot of VM and get SAS access token
     $vm = get-azvm -ResourceGroupName $sourceResourceGroupName -Name $vmName
     $snapshot =  New-AzSnapshotConfig -SourceUri $vm.StorageProfile.OsDisk.ManagedDisk.Id -Location $location -CreateOption copy
-    New-AzSnapshot -Snapshot $snapshot -SnapshotName $snapshotName -ResourceGroupName $sourceResourceGroupName 
-    $sas += Grant-AzSnapshotAccess -ResourceGroupName $sourceResourceGroupName -SnapshotName $snapshotName -DurationInSecond $sasExpiryDuration -Access Read
+    New-AzSnapshot -Snapshot $snapshot -SnapshotName $snapshotName -ResourceGroupName $masterImageRG 
+    $sas += Grant-AzSnapshotAccess -ResourceGroupName $masterImageRG -SnapshotName $snapshotName -DurationInSecond $sasExpiryDuration -Access Read
 }
 
 # Copy new snapshot to VMImages storage account in each region
