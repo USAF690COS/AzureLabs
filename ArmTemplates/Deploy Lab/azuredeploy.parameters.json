@@ -3,10 +3,10 @@
     "contentVersion": "1.0.0.0",
     "parameters": {
       "userName": {
-        "value": "KevinF"
+        "value": "KevinG"
       },      
       "location": {
-        "value": "westus"
+        "value": "westus2"
       },
       "labType": {
         "value": "DSO"

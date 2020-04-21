@@ -1,0 +1,4 @@
+{
+  "itemDisplayName": "DHCP VM",
+  "description": "Template to deploy DHCP VM in new lab instance resource group"
+}

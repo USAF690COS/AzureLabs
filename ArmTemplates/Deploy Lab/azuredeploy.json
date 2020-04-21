@@ -33,7 +33,8 @@
             "type": "string",
             "allowedValues": [
                 "DCPromo",
-                "DC1"
+                "DC1",
+                "DHCP"
             ],            
             "metadata": {
                 "description": "Lab scenario name"

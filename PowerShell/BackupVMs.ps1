@@ -31,7 +31,7 @@ ForEach ($vmName in $vms) {
 For ($counter=0 ; $counter -lt $regions.Length; $counter++) { 
     $targetStorageAccountName = $storageAccountPrefix + $regions[$counter]
     $targetStorageContainerName = "vmimages"
-    $sasExpiryDuration = "3600"
+    $sasExpiryDuration = "7200"
     $keyName = "snapStorageKey-" + $regions[$counter]    
     $storageAccountKey = (Get-AzKeyVaultSecret -vaultName "USAF-690COS-LabKeys" -name $keyName).SecretValueText
     $destinationContext += New-AzStorageContext -StorageAccountName $targetStorageAccountName -StorageAccountKey $storageAccountKey
