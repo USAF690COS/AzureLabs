@@ -6,6 +6,9 @@
     "variables": {
       "rgName": "[resourceGroup().name]",
       "location": "[resourceGroup().location]",
+      "snapshotResourceGroup": "[concat('vmImages-', variables('location'))]",
+      "storageAccountName": "[concat('vmimagevhds', variables('location'))]",
+      "storageAccountResourceID": "[resourceId(variables('snapshotResourceGroup'), 'Microsoft.Storage/storageAccounts', variables('storageAccountName'))]",
       "snapshots_externalid": "/subscriptions/dad08713-2fe7-44c6-b4f5-301d727f307d/resourceGroups/MasterImageSnapshots/providers/Microsoft.Compute/snapshots/TrnLabDCreplDC2202004201816",
       "vmName": "DC2",
       "osType": "Windows",
@@ -31,7 +34,8 @@
         "location": "[variables('location')]",
         "tags": "[variables('resourceTags')]",
         "dependsOn": [
-          "[resourceId('Microsoft.Network/loadBalancers', variables('lbName'))]"
+          "[resourceId('Microsoft.Network/loadBalancers', variables('lbName'))]",
+          "[concat(resourceId('Microsoft.Network/loadBalancers', variables('lbName')), '/inboundNatRules/', variables('vmName'), '-NAT-In')]"
         ],
         "properties": {
           "ipConfigurations": [
@@ -72,7 +76,7 @@
             "hyperVGeneration": "V2",
             "creationData": {
                 "createOption": "Copy",
-                "sourceResourceId": "[variables('snapshots_externalid')]"
+                "sourceResourceId": "[resourceId(variables('snapshotResourceGroup'), 'Microsoft.Compute/snapshots', reference(variables('storageAccountResourceID'), '2018-07-01', 'Full').tags.TrnLabDCreplDC2Active)]"
             },
             "diskSizeGB": 128,
             "diskIOPSReadWrite": 500,
