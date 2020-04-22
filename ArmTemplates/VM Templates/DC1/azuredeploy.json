@@ -7,6 +7,8 @@
       "rgName": "[resourceGroup().name]",
       "location": "[resourceGroup().location]",
       "snapshotResourceGroup": "[concat('vmImages-', variables('location'))]",
+      "storageAccountName": "[concat('vmimagevhds', variables('location'))]",
+      "storageAccountResourceID": "[resourceId(variables('snapshotResourceGroup'), 'Microsoft.Storage/storageAccounts', variables('storageAccountName'))]",
       "snapshots_externalid": "/subscriptions/dad08713-2fe7-44c6-b4f5-301d727f307d/resourceGroups/MasterImageSnapshots/providers/Microsoft.Compute/snapshots/TrnLabDCreplDC1202004201815",
       "vmName": "DC1",
       "osType": "Windows",

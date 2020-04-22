@@ -4,12 +4,14 @@ $subscription = Get-AzSubscription
 $SubscriptionId = $subscription.Id
 Select-AzSubscription -SubscriptionId $SubscriptionId
 
-$masterImageRG = "MasterImageSnapshots"
-$regions = "westus", "westus2"
-$vms = "TrnLabDCreplDC1", "TrnLabDCreplDC2", "TrnLabDCreplDH1", "TrnLabDCreplW10", "TrnLabCMW10-01", "TrnLabCMPS1"
 $storageAccountPrefix = "vmimagevhds"
+$regions = "westus", "westus2"
+$masterImageRG = "MasterImageSnapshots"
+
+# Name of RG containing master VMs
 $sourceResourceGroupName = "Trn_Lab_DCrepl_001"
-$location = "westus2"
+$vms = (Get-AzVM -ResourceGroupName $sourceResourceGroupName).name
+$location = (Get-AzResourceGroup -Name $sourceResourceGroupName).Location
 $destinationContext = @()
 $snapshotList = @()
 $sas = @()
@@ -17,7 +19,7 @@ $sas = @()
 # Create snapshot of all VMs
 ForEach ($vmName in $vms) {
     $timeStamp = Get-Date -Format "yyyyMMddHHmm"
-    $snapshotName = $vmName + $timeStamp
+    $snapshotName = $vmName + '-T' + $timeStamp
     $snapshotList += $snapshotName
 
     #Create Snapshot of VM and get SAS access token
@@ -27,7 +29,7 @@ ForEach ($vmName in $vms) {
     $sas += Grant-AzSnapshotAccess -ResourceGroupName $masterImageRG -SnapshotName $snapshotName -DurationInSecond $sasExpiryDuration -Access Read
 }
 
-# Copy new snapshot to VMImages storage account in each region
+# Copy snapshot vhd file to VMImages storage account in each region
 For ($counter=0 ; $counter -lt $regions.Length; $counter++) { 
     $targetStorageAccountName = $storageAccountPrefix + $regions[$counter]
     $targetStorageContainerName = "vmimages"
@@ -37,7 +39,6 @@ For ($counter=0 ; $counter -lt $regions.Length; $counter++) {
     $destinationContext += New-AzStorageContext -StorageAccountName $targetStorageAccountName -StorageAccountKey $storageAccountKey
 
     For ($vmCount = 0; $vmCount -lt $snapshotList.Length; $vmCount++) {
-        #Copy the snapshot to the storage account 
         $vmSnapName = $snapshotList[$vmCount]
         $destinationVHDFileName = "$vmSnapName.vhd"
         Start-AzStorageBlobCopy -AbsoluteUri $sas[$vmCount].AccessSAS -DestContainer $targetStorageContainerName -DestContext $destinationContext[$counter] -DestBlob $destinationVHDFileName          

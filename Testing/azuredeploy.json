@@ -1,0 +1,30 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "storageAccountTest": {
+            "type": "string",
+            "defaultValue": "testDefaultValue",
+            "metadata": {
+                "description": "storage account name."
+            }
+        }
+    },
+    "variables": {
+        "storageAccountRG": "[concat('vmImages-', variables('location'))]",
+        "rgName": "[resourceGroup().name]",
+        "location": "[resourceGroup().location]",
+        "storageAccountName": "[concat('vmimagevhds', variables('location'))]",
+        "storageAccountResourceID": "[resourceId(variables('storageAccountRG'), 'Microsoft.Storage/storageAccounts', variables('storageAccountName'))]",
+        "vmName": "DC1",
+        "snapShotTagID": "[concat(variables('vmName'), 'Active')]"
+    },
+    "resources": [
+    ],
+    "outputs": {
+        "ActiveVM": {
+            "type": "string",
+            "value": "[concat(variables('storageAccountRG'), '/', variables('storageAccountName'), '/', reference(variables('storageAccountResourceID'), '2018-07-01', 'Full').tags.DC1Active)]"
+        }
+    }    
+}
