@@ -2,7 +2,7 @@ $templateParamterUri = "https://raw.githubusercontent.com/USAF690COS/AzureLabs/m
 $templateParamterFile = "C:\git\AzureLabs\ArmTemplates\Deploy Lab\azuredeploy.parameters.json"
 $templateUri = "https://raw.githubusercontent.com/USAF690COS/AzureLabs/master/ArmTemplates/Deploy%20Lab/azuredeploy.json"
 
-$outputs = New-AzSubscriptionDeployment -Location 'westus' -name 'LabDeployWestUS' -TemplateUri $templateUri -TemplateParameterFile $templateParamterFile
+$outputs = New-AzSubscriptionDeployment -Location 'westus' -name 'LabDeployTags' -TemplateUri $templateUri -TemplateParameterFile $templateParamterFile
 
 $resourceGroupName = $outputs.Outputs.resourceGroupName.Value
 $resourceGroupName
