@@ -33,23 +33,29 @@ ForEach ($region in $regions) {
 
         #Create Snapshot from VHD file
         $snapshotConfig = New-AzSnapshotConfig -AccountType $storageType -Location $location -CreateOption Import -StorageAccountId $storageAccountId -SourceUri $sourceVHDURI -HyperVGeneration 'V2'
-        New-AzSnapshot -Snapshot $snapshotConfig -ResourceGroupName $resourceGroupName -SnapshotName $snapshotName
+        $snapshotProvisioningState = New-AzSnapshot -Snapshot $snapshotConfig -ResourceGroupName $resourceGroupName -SnapshotName $snapshotName
 
-        # Update Tags on Storage Account with new snapshot name
-        # get value of 'active' tag, overwrite 'rollback' tag with value
-        # overwrite 'active' tag with name of new snapshot
+        # If snapshot provisioning succeeds:
+        If ($snapshotProvisioningState.ProvisioningState -eq 'Succeeded') {
 
-        $tagActiveKey = $vmName + "Active"
-        $tagActiveValue = $snapshotName
-        $tagRollbackKey = $vmName + "Rollback"
-        $tagRollbackValue = $storageAccount.Tags.$tagActiveKey
+            # Get existing Tags on storage account
+            $tagActiveKey = $vmName + "Active"
+            $tagActiveValue = $snapshotName
+            $tagRollbackKey = $vmName + "Rollback"
+            $tagRollbackValue = $storageAccount.Tags.$tagActiveKey
 
-        # Get existing Tags on storage account and add/update new values
-        $resourceTags = $storageAccount.Tags
-        $resourceTags.$tagActiveKey = $tagActiveValue
-        $resourceTags.$tagRollbackKey = $tagRollbackValue
+            # If new/current snapshot name is different from previous/active snapshot name
+            # then updated 'Active' and 'Rollback' tags
+            If ($tagActiveValue -ne $tagRollbackValue) {
+                
+                # Get existing Tags on storage account and add/update new values
+                $resourceTags = $storageAccount.Tags
+                $resourceTags.$tagActiveKey = $tagActiveValue
+                $resourceTags.$tagRollbackKey = $tagRollbackValue
 
-        Set-AzResource -Tag $resourceTags -ResourceId $storageAccountId -Force
+                Set-AzResource -Tag $resourceTags -ResourceId $storageAccountId -Force
+            }
+        }
     }
 }
 
