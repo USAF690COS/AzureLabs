@@ -38,11 +38,27 @@ ForEach ($vmName in $vms) {
     $snapshotName = $vmName + '-T' + $timeStamp
     $snapshotList += $snapshotName
 
-    #Create Snapshot of VM and get SAS access token
+    #Create Snapshot of VM OS Disk and get SAS access token
     $vm = get-azvm -ResourceGroupName $sourceResourceGroupName -Name $vmName
     $snapshot =  New-AzSnapshotConfig -SourceUri $vm.StorageProfile.OsDisk.ManagedDisk.Id -Location $location -CreateOption copy
     New-AzSnapshot -Snapshot $snapshot -SnapshotName $snapshotName -ResourceGroupName $masterImageRG 
     $sas += Grant-AzSnapshotAccess -ResourceGroupName $masterImageRG -SnapshotName $snapshotName -DurationInSecond $sasExpiryDuration -Access Read
+
+    # Check if VM has data disks
+    If ($vm.StorageProfile.DataDisks.Count -gt 0) { 
+        # Create Snapshot of each data disk and get SAS access token
+        For ($diskCount=0; $diskCount -lt $vm.StorageProfile.DataDisks.Count; $diskCount++){ 
+                 
+            #Snapshot name of data disk 
+            $snapshotName = $vm.StorageProfile.DataDisks[$diskCount].Name + '-T' + $timeStamp
+            $snapshotList += $snapshotName
+             
+            #Create snapshot configuration 
+            $snapshot =  New-AzSnapshotConfig -SourceUri $vm.StorageProfile.DataDisks[$diskCount].ManagedDisk.Id -Location $location  -CreateOption copy 
+            New-AzSnapshot -Snapshot $snapshot -SnapshotName $snapshotName -ResourceGroupName $masterImageRG
+            $sas += Grant-AzSnapshotAccess -ResourceGroupName $masterImageRG -SnapshotName $snapshotName -DurationInSecond $sasExpiryDuration -Access Read
+        } 
+    } 
 }
 
 # Copy snapshot vhd file to VMImages storage account in each region
