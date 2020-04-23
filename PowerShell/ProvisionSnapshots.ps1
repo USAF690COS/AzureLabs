@@ -1,6 +1,7 @@
 # Find newest VHD image and create snapshots for each VM
-# tag storage account with 'Active' and 'Rollback' snapshot names for each VM
-# to be referenced in ARM template for VM deployments
+# (Note: only creates new snap if VHD file is newer than current/latest snap)
+# Tag storage account with 'Active' and 'Rollback' snapshot names for each VM
+# (Tags referenced in ARM template for VM deployments)
 
 $subscription = Get-AzSubscription
 $SubscriptionId = $subscription.Id
@@ -50,8 +51,8 @@ ForEach ($region in $regions) {
                 
                 # Get existing Tags on storage account and add/update new values
                 $resourceTags = $storageAccount.Tags
-                $resourceTags.$tagActiveKey = $tagActiveValue
                 $resourceTags.$tagRollbackKey = $tagRollbackValue
+                $resourceTags.$tagActiveKey = $tagActiveValue
 
                 Set-AzResource -Tag $resourceTags -ResourceId $storageAccountId -Force
             }
