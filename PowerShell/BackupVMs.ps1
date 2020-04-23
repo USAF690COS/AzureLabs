@@ -9,7 +9,7 @@ $regions = "westus", "westus2"
 $masterImageRG = "MasterImageSnapshots"
 
 # Name of RG containing master VMs
-$sourceResourceGroupName = "Trn_Lab_DCrepl_001"
+$sourceResourceGroupName = (Get-AzAutomationVariable -AutomationAccountName LabAutomation -Name 'MasterRGName' -ResourceGroupName 'LabAutomation').Value
 $vms = (Get-AzVM -ResourceGroupName $sourceResourceGroupName).name
 $location = (Get-AzResourceGroup -Name $sourceResourceGroupName).Location
 $destinationContext = @()

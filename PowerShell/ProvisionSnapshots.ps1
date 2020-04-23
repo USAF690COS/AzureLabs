@@ -9,7 +9,7 @@ Select-AzSubscription -SubscriptionId $SubscriptionId
 $storageType = 'Standard_LRS'
 $storageAccountPrefix = "vmimagevhds"
 $regions = "westus", "westus2"
-$masterResourceGroupName = "Trn_Lab_DCrepl_001"
+$masterResourceGroupName = (Get-AzAutomationVariable -AutomationAccountName LabAutomation -Name 'MasterRGName' -ResourceGroupName 'LabAutomation').Value
 $vms = (Get-AzVM -ResourceGroupName $masterResourceGroupName).name
 
 ForEach ($region in $regions) {
