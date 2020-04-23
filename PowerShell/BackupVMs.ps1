@@ -1,16 +1,35 @@
-# Creates snapshot of each VM, then copies each snapshot to destination storage account containers
+#param (
+#    [string]$vmList = $(Read-Host "Comma-seperated list of VM(s) to back-up (type to backup all VMs)" )
+#)
 
+# Get VM list from user
+Write-Host "Type a list of VM(s) to back-up, or type" -ForegroundColor Green -NoNewline
+Write-Host " [all] " -ForegroundColor Yellow -NoNewline
+Write-Host "to backup all VMs: " -ForegroundColor Green
+Write-Host "(Example: VM1, VM2, VM3)" -ForegroundColor Blue
+$vmList = Read-Host
+
+# Get current subscription
 $subscription = Get-AzSubscription
 $SubscriptionId = $subscription.Id
 Select-AzSubscription -SubscriptionId $SubscriptionId
 
+# Get Master Environment Resource Group Name
+$sourceResourceGroupName = (Get-AzAutomationVariable -AutomationAccountName LabAutomation -Name 'MasterRGName' -ResourceGroupName 'LabAutomation').Value
+
+# Get list of VMs based on input parameter (delimited string; or 'all': get all VMs from Maseter RG)
+If ($vmList.ToLower() -eq 'all') {
+    $vms = (Get-AzVM -ResourceGroupName $sourceResourceGroupName).name
+}
+else {
+    $vms = $vmList.Split(",")
+    $vms = $vms | ForEach-Object {$_.Trim()}
+}
+
+# Setup variables
 $storageAccountPrefix = "vmimagevhds"
 $regions = "westus", "westus2"
 $masterImageRG = "MasterImageSnapshots"
-
-# Name of RG containing master VMs
-$sourceResourceGroupName = (Get-AzAutomationVariable -AutomationAccountName LabAutomation -Name 'MasterRGName' -ResourceGroupName 'LabAutomation').Value
-$vms = (Get-AzVM -ResourceGroupName $sourceResourceGroupName).name
 $location = (Get-AzResourceGroup -Name $sourceResourceGroupName).Location
 $destinationContext = @()
 $snapshotList = @()
