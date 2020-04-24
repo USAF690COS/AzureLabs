@@ -128,8 +128,7 @@
                 "writeAcceleratorEnabled": false,
                 "managedDisk": {
                   "id": "[resourceId(variables('snapshotResourceGroup'), 'Microsoft.Compute/snapshots', reference(variables('storageAccountResourceID'), '2018-07-01', 'Full').tags.TrnLabCMPS1_DataDisk_0Active)]"
-                },
-                "toBeDetached": false
+                }
               },
               {
                 "lun": 1,
@@ -138,8 +137,7 @@
                 "caching": "None",
                 "managedDisk": {
                   "id": "[resourceId(variables('snapshotResourceGroup'), 'Microsoft.Compute/snapshots', reference(variables('storageAccountResourceID'), '2018-07-01', 'Full').tags.TrnLabCMPS1_CMDiskActive)]"
-                },
-                "toBeDetached": false
+                }
               },
               {
                 "lun": 2,
@@ -148,8 +146,7 @@
                 "caching":"None",
                 "managedDisk":{
                   "id": "[resourceId(variables('snapshotResourceGroup'), 'Microsoft.Compute/snapshots', reference(variables('storageAccountResourceID'), '2018-07-01', 'Full').tags.TrnLabCMPS1_ConLibActive)]"
-                },
-                "toBeDetached": false
+                }
               }
             ]
           },
