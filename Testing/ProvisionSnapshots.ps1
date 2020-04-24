@@ -69,3 +69,4 @@ ForEach ($region in $regions) {
         }
     }
 }
+
