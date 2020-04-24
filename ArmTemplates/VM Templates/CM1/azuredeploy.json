@@ -116,7 +116,7 @@
               "caching": "ReadWrite",
               "createOption": "Attach",
               "managedDisk": {
-                "id": "variables('OSSnapshot_externalid')"
+                "id": "[resourceId(variables('snapshotResourceGroup'), 'Microsoft.Compute/snapshots', reference(variables('storageAccountResourceID'), '2018-07-01', 'Full').tags.TrnLabCMPS1Active)]"
               }
             },
             "dataDisks": [
