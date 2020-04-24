@@ -125,7 +125,6 @@
                 "name": "[concat(variables('vmName'), '_DataDisk_0')]",
                 "createOption": "Attach",
                 "caching": "ReadOnly",
-                "writeAcceleratorEnabled": false,
                 "managedDisk": {
                   "id": "[resourceId(variables('snapshotResourceGroup'), 'Microsoft.Compute/snapshots', reference(variables('storageAccountResourceID'), '2018-07-01', 'Full').tags.TrnLabCMPS1_DataDisk_0Active)]"
                 }
