@@ -103,8 +103,8 @@
                 "sourceResourceId": "[resourceId(variables('snapshotResourceGroup'), 'Microsoft.Compute/snapshots', reference(variables('storageAccountResourceID'), '2018-07-01', 'Full').tags.TrnLabCMPS1_DataDisk_0Active)]"
             },
             "diskSizeGB": 129,
-            "diskIOPSReadWrite": 500,
-            "diskMBpsReadWrite": 100,
+            "diskIOPSReadWrite": 1100,
+            "diskMBpsReadWrite": 125,
             "encryption": {
                 "type": "EncryptionAtRestWithPlatformKey"
             }
