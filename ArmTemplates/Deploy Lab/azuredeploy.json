@@ -34,7 +34,8 @@
             "allowedValues": [
                 "DCPromo",
                 "DC1",
-                "DHCP"
+                "DHCP",
+                "SCCM"
             ],            
             "metadata": {
                 "description": "Lab scenario name"
