@@ -90,29 +90,6 @@
       {
         "type": "Microsoft.Compute/disks",
         "apiVersion": "2019-07-01",
-        "name": "[concat(variables('vmName'), '_DataDisk_0')]",
-        "location": "[variables('location')]",
-        "sku": {
-            "name": "Premium_LRS",
-            "tier": "Premium"
-        },
-        "properties": {
-            "osType": "Windows",
-            "creationData": {
-                "createOption": "Copy",
-                "sourceResourceId": "[resourceId(variables('snapshotResourceGroup'), 'Microsoft.Compute/snapshots', reference(variables('storageAccountResourceID'), '2018-07-01', 'Full').tags.TrnLabCMPS1_DataDisk_0Active)]"
-            },
-            "diskSizeGB": 129,
-            "diskIOPSReadWrite": 1100,
-            "diskMBpsReadWrite": 125,
-            "encryption": {
-                "type": "EncryptionAtRestWithPlatformKey"
-            }
-        }
-      },
-      {
-        "type": "Microsoft.Compute/disks",
-        "apiVersion": "2019-07-01",
         "name": "[concat(variables('vmName'), '_CMDisk')]",
         "location": "[variables('location')]",
         "sku": {
@@ -189,15 +166,6 @@
               }
             },
             "dataDisks": [
-              {
-                "lun": 0,
-                "name": "[concat(variables('vmName'), '_DataDisk_0')]",
-                "createOption": "Attach",
-                "caching": "ReadOnly",
-                "managedDisk": {
-                  "id": "[resourceId('Microsoft.Compute/disks', concat(variables('vmName'), '_DataDisk_0'))]"
-                }
-              },
               {
                 "lun": 1,
                 "name": "[concat(variables('vmName'), '_CMDisk')]",
