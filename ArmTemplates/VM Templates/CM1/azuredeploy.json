@@ -183,10 +183,7 @@
             "osDisk": {
               "osType": "[variables('osType')]",
               "caching": "ReadWrite",
-              "createOption": "FromImage",
-              "managedDisk": {
-                "id": "[resourceId('Microsoft.Compute/disks', concat(variables('vmName'), '_OSdisk'))]"
-              }
+              "createOption": "FromImage"
             },
             "dataDisks": [
               {
