@@ -76,7 +76,7 @@
             "hyperVGeneration": "V1",
             "creationData": {
                 "createOption": "Copy",
-                "sourceResourceId": "[resourceId(variables('snapshotResourceGroup'), 'Microsoft.Compute/snapshots', reference(variables('storageAccountResourceID'), '2018-07-01', 'Full').tags.TrnLabCMW10-01Active)]"
+                "sourceResourceId": "[resourceId(variables('snapshotResourceGroup'), 'Microsoft.Compute/snapshots', reference(variables('storageAccountResourceID'), '2018-07-01', 'Full').tags['TrnLabCMW10-01Active'])]"
             },
             "diskSizeGB": 128,
             "diskIOPSReadWrite": 500,
