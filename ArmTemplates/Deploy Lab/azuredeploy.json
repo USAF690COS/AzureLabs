@@ -23,7 +23,8 @@
             "allowedValues": [
                 "DSO",
                 "VRO"
-            ],    
+            ],
+            "defaultValue": "DSO",
             "metadata": {
                 "description": "Lab operator role type"
             }
@@ -32,7 +33,7 @@
         "labName": {
             "type": "string",
             "allowedValues": [
-                "DCPromo",
+                "dcpromo",
                 "DC1",
                 "DHCP",
                 "SCCM"
