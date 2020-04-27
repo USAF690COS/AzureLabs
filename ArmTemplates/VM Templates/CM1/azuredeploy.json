@@ -10,7 +10,6 @@
       "storageAccountName": "[concat('vmimagevhds', variables('location'))]",
       "storageAccountResourceID": "[resourceId(variables('snapshotResourceGroup'), 'Microsoft.Storage/storageAccounts', variables('storageAccountName'))]",
       "snapshots_externalid": "/subscriptions/dad08713-2fe7-44c6-b4f5-301d727f307d/resourceGroups/MasterImageSnapshots/providers/Microsoft.Compute/snapshots/TrnLabDCreplDC1202004201815",
-      "OSSnapshot_externalid": "/subscriptions/dad08713-2fe7-44c6-b4f5-301d727f307d/resourceGroups/vmImages-westus2/providers/Microsoft.Compute/snapshots/TrnLabCMPS1-T202004221019",
       "vmName": "CM1",
       "osType": "Windows",
       "vmSize": "Standard_B2ms",
@@ -174,16 +173,10 @@
             "vmSize": "[variables('vmSize')]"
           },
           "storageProfile": {
-            "imageReference": {
-              "publisher": "MicrosoftSQLServer",
-              "offer": "SQL2017-WS2016",
-              "sku": "enterprise-gen2",
-              "version": "latest"
-            },
             "osDisk": {
               "osType": "[variables('osType')]",
               "caching": "ReadWrite",
-              "createOption": "FromImage",
+              "createOption": "Attach",
               "managedDisk": {
                 "id": "[resourceId('Microsoft.Compute/disks', concat(variables('vmName'), '_OSdisk'))]"
               }
