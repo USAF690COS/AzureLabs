@@ -138,7 +138,7 @@
         "name": "[concat(variables('vmName'), '_ConLib')]",
         "location": "[variables('location')]",
         "sku": {
-            "name": "StandardSSD_LRS"
+            "name": "Standard_LRS"
         },
         "properties": {
             "osType": "Windows",
