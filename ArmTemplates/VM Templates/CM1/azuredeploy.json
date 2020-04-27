@@ -134,12 +134,11 @@
       },
       {
         "type": "Microsoft.Compute/disks",
-        "apiVersion": "2018-04-01",
+        "apiVersion": "2019-07-01",
         "name": "[concat(variables('vmName'), '_ConLib')]",
         "location": "[variables('location')]",
         "sku": {
-            "name": "StandardSSD_LRS",
-            "tier": "Standard"
+            "name": "StandardSSD_LRS"
         },
         "properties": {
             "osType": "Windows",
