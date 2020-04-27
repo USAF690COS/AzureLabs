@@ -29,13 +29,13 @@ For ($labNumber=1; $labNumber -le $labCount; $labNumber++) {
 
     $templateParameters = @{
         userName = $userName
-        location = $location
-        labName = $labName
+        location = $location.ToLower()
+        labName = $labName.ToLower()
     }
 
     $deploymentName = $templateParameters.userName + $templateParameters.labName
-    $jobs += Start-Job {New-AzDeployment -Location $args[0] -Name $args[1] -TemplateFile $args[2] -TemplateParameterObject $args[3]} `
-        -ArgumentList $location, $deploymentName, $templateFile, $templateParameters
+    $jobs += Start-Job {New-AzDeployment -Location $args[0] -Name $args[1] -TemplateUri $args[2] -TemplateParameterObject $args[3]} `
+        -ArgumentList $location, $deploymentName, $templateUri, $templateParameters
 }
 
 $jobs | Wait-Job
@@ -43,6 +43,7 @@ $jobs | Wait-Job
 ForEach ($job in $jobs) {
 
     Write-Host $labUserPrefix ($jobs.IndexOf($job) + 1) "Lab Environment:" -ForegroundColor Green
+    $outputs = Receive-Job -Job $job -Keep
 
     # Break output into string array
     $outstring = $outputs | Out-String -width 4096 

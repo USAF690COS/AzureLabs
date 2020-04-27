@@ -34,8 +34,8 @@
             "type": "string",
             "allowedValues": [
                 "dcpromo",
-                "DC1",
-                "DHCP",
+                "dc1",
+                "dhcp",
                 "SCCM"
             ],            
             "metadata": {
