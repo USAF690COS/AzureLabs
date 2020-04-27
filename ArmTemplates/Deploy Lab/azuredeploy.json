@@ -36,7 +36,7 @@
                 "dcpromo",
                 "DC1",
                 "DHCP",
-                "SCCM"
+                "sccm"
             ],            
             "metadata": {
                 "description": "Lab scenario name"
