@@ -34,9 +34,15 @@
             "type": "string",
             "allowedValues": [
                 "dcpromo",
+<<<<<<< HEAD
                 "dc1",
                 "dhcp",
                 "SCCM"
+=======
+                "DC1",
+                "DHCP",
+                "sccm"
+>>>>>>> ed27cc660742c9c7498855df429ea23971243cc0
             ],            
             "metadata": {
                 "description": "Lab scenario name"
