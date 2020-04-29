@@ -5,4 +5,4 @@ Deploys a Windows Server 2016 VM with SQL Server 2017.
 
 | Version | Description |
 | ------- | ----------- |
-|**1.0**  | SCCM/MEM Standalone Primary Site v1910<br>&emsp;Installed Site System Roles:<br>&emsp;&emsp;Distribution Point<br>&emsp;&emsp;Managment Point<br>&emsp;&emsp;Service Connection Point<br>&emsp;&emsp;Software Update Point |
+|**1.0**  | SCCM/MEM Standalone Primary Site v1910<br>&emsp;Installed Site System Roles:<br>&emsp;&emsp;&bull; Distribution Point<br>&emsp;&emsp;&bull; Managment Point<br>&emsp;&emsp;&bull; Service Connection Point<br>&emsp;&emsp;&bull; Software Update Point |
