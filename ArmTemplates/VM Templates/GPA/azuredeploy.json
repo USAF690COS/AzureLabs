@@ -16,7 +16,7 @@
       "subnetName": "Subnet1",
       "subnetRef": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworkName'),  variables('subnetName'))]",
       "nicName": "[concat(variables('vmName'), '-nic1')]",
-      "lastOctetIP": "11",
+      "lastOctetIP": "7",
       "lbNATPort": "[concat('60', padLeft(variables('lastOctetIP'), 3, '0'))]",
       "lbNATRuleName": "[concat(variables('vmName'), '-NAT-In')]",
       "privateIPAddress": "[concat('10.10.0.', variables('lastOctetIP'))]",
