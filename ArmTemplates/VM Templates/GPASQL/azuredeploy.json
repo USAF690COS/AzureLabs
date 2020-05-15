@@ -173,7 +173,7 @@
                 "createOption": "Attach",
                 "caching": "None",
                 "managedDisk": {
-                  "id": "[resourceId('Microsoft.Compute/disks', concat(variables('vmName'), '_DataDisk_0'))]"
+                  "id": "[resourceId('Microsoft.Compute/disks', concat(variables('vmName'), '_DataDisk_1'))]"
                 }
               }
             ]
