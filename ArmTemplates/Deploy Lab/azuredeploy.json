@@ -36,7 +36,8 @@
                 "dcpromo",
                 "dc1",
                 "dhcp",
-                "sccm"
+                "sccm",
+                "gpa"
             ],            
             "metadata": {
                 "description": "Lab scenario name"
