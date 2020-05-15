@@ -1,0 +1,4 @@
+{
+  "itemDisplayName": "DC1 VM",
+  "description": "Template to deploy GPA Console VM in new lab instance resource group"
+}
