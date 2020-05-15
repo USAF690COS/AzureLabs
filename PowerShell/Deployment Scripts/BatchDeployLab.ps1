@@ -25,9 +25,10 @@ $azContext = Get-AzContext
 For ($labNumber=1; $labNumber -le $labCount; $labNumber++) {
     $userName = $labUserPrefix + $labNumber
 
-    #$templateParamterFile = "C:\git\AzureLabs\ArmTemplates\Deploy Lab\azuredeploy.parameters.json"
     $templateUri = "https://raw.githubusercontent.com/USAF690COS/AzureLabs/master/ArmTemplates/Deploy%20Lab/azuredeploy.json"
-    $templateFile = "C:\git\AzureLabs\ArmTemplates\Deploy Lab\azuredeploy.json"
+    
+    # $tmeplateFile - For use in place of $templateURI for testing purposes only
+    # $templateFile = "C:\git\AzureLabs\ArmTemplates\Deploy Lab\azuredeploy.json"
 
     $templateParameters = @{
         userName = $userName
