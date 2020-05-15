@@ -20,6 +20,8 @@ $location = Read-Host
 
 $jobs = @()
 
+$azContext = Get-AzContext
+
 For ($labNumber=1; $labNumber -le $labCount; $labNumber++) {
     $userName = $labUserPrefix + $labNumber
 
@@ -34,7 +36,7 @@ For ($labNumber=1; $labNumber -le $labCount; $labNumber++) {
     }
 
     $deploymentName = $templateParameters.userName + $templateParameters.labName
-    $jobs += Start-Job {New-AzDeployment -Location $args[0] -Name $args[1] -TemplateUri $args[2] -TemplateParameterObject $args[3]} `
+    $jobs += Start-Job {New-AzDeployment -DefaultProfile $azContext -Location $args[0] -Name $args[1] -TemplateUri $args[2] -TemplateParameterObject $args[3]} `
         -ArgumentList $location, $deploymentName, $templateUri, $templateParameters
 }
 
