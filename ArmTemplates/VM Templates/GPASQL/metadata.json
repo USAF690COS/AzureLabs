@@ -1,0 +1,4 @@
+{
+  "itemDisplayName": "GPASQL VM",
+  "description": "Template to deploy GPASQL VM in new lab instance resource group"
+}
