@@ -16,7 +16,7 @@
       "subnetName": "Subnet1",
       "subnetRef": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworkName'),  variables('subnetName'))]",
       "nicName": "[concat(variables('vmName'), '-nic1')]",
-      "lastOctetIP": "5",
+      "lastOctetIP": "9",
       "lbNATPort": "[concat('60', padLeft(variables('lastOctetIP'), 3, '0'))]",
       "lbNATRuleName": "[concat(variables('vmName'), '-NAT-In')]",
       "privateIPAddress": "[concat('10.10.0.', variables('lastOctetIP'))]",
@@ -75,7 +75,7 @@
             "hyperVGeneration": "V2",
             "creationData": {
                 "createOption": "Copy",
-                "sourceResourceId": "[resourceId(variables('snapshotResourceGroup'), 'Microsoft.Compute/snapshots', reference(variables('storageAccountResourceID'), '2018-07-01', 'Full').tags.TrnLabCMPS1Active)]"
+                "sourceResourceId": "[resourceId(variables('snapshotResourceGroup'), 'Microsoft.Compute/snapshots', reference(variables('storageAccountResourceID'), '2018-07-01', 'Full').tags.TrnLabGpaSQdbActive)]"
             },
             "diskSizeGB": 128,
             "diskIOPSReadWrite": 500,
