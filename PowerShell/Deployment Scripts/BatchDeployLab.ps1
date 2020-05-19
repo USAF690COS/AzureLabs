@@ -20,73 +20,34 @@ $location = Read-Host
 
 $jobs = @()
 
-$azContext = Get-AzContext
-
 For ($labNumber=1; $labNumber -le $labCount; $labNumber++) {
-    $userName = $labUserPrefix + $labNumber
-
-    $templateUri = "https://raw.githubusercontent.com/USAF690COS/AzureLabs/master/ArmTemplates/Deploy%20Lab/azuredeploy.json"
-    
-    # $tmeplateFile - For use in place of $templateURI for testing purposes only
-    # $templateFile = "C:\git\AzureLabs\ArmTemplates\Deploy Lab\azuredeploy.json"
-
-    $templateParameters = @{
-        userName = $userName
-        location = $location.ToLower()
-        labName = $labName.ToLower()
-    }
-
-    $deploymentName = $templateParameters.userName + $templateParameters.labName
-    $jobs += Start-Job {New-AzDeployment -DefaultProfile $azContext -Location $args[0] -Name $args[1] -TemplateUri $args[2] -TemplateParameterObject $args[3]} `
-        -ArgumentList $location, $deploymentName, $templateUri, $templateParameters
+    If ($labCount -gt 1) {$userName = $labUserPrefix + $labNumber}
+    Else {$userName = $labUserPrefix}
+    $runbookParameters = @{"userName"=$userName;"location"=$location.ToLower();"labName"=$labName.ToLower()}
+    $jobs += Start-AzAutomationRunbook -AutomationAccountName 'LabAutomation' -ResourceGroupName 'LabAutomation' -Name 'DeployLab' -Parameters $runbookParameters    
 }
 
-$jobs | Wait-Job
+Write-Host "Your labs are being deployed in Azure."  -ForegroundColor Magenta
+Write-Host "Once your labs are ready, your VM connection information will be provided in the output below."  -ForegroundColor Magenta
 
 ForEach ($job in $jobs) {
-
-    Write-Host $labUserPrefix ($jobs.IndexOf($job) + 1) "Lab Environment:" -ForegroundColor Green
-    $outputs = Receive-Job -Job $job -Keep
-
-    # Break output into string array
-    $outstring = $outputs | Out-String -width 4096 
-    $arrayout = $outstring.Split("`n")
-    foreach ($line in $arrayout) {
-
-        If ($line -match "resourceGroupName") {
-            #find resourceGroupName
-            $newString = $line.Substring($line.LastIndexOf(" "), ($line.Length - $line.LastIndexOf(" "))).Trim()
-            $newString = $newString.Replace('"', "")
-            $newString = $newString.Replace(",","")
-            $resourceGroupName = $newString
-            $resourceGroupName
-        }
-        ElseIf ($line -match "VMName") {
-            #find VMName
-            $newString = $line.Substring($line.LastIndexOf(" "), ($line.Length - $line.LastIndexOf(" "))).Trim()
-            $newString = $newString.Replace('"', "")
-            $newString = $newString.Replace(",","")
-            $VMName = $newString
-            Write-Host "$VMName - " -NoNewline
-        }
-        ElseIf ($line -match "PublicIPResourceID") {
-            #find PublicIPResourceID, then run code to pull IP
-            $newString = $line.Substring($line.LastIndexOf(" "), ($line.Length - $line.LastIndexOf(" "))).Trim()
-            $newString = $newString.Replace('"', "")
-            $newString = $newString.Replace(",","")
-            $PIPID = $newString
-            $PIPResource = Get-AzResource -id $PIPID
-            $PublicIP = (Get-AzPublicIpAddress -Name $PIPResource.Name).IpAddress
-            $PublicIPString = $PublicIP + ":"
-            Write-Host $PublicIPString -NoNewline
-        }
-        ElseIf ($line -match "VMPublicPort") {
-            #Find VM Public Port
-            $newString = $line.Substring($line.LastIndexOf(" "), ($line.Length - $line.LastIndexOf(" "))).Trim()
-            $newString = $newString.Replace('"', "")
-            $newString = $newString.Replace(",","")
-            $PublicPort = $newString
-            Write-Host $PublicPort 
-        }
+    $i=0
+    $jobStatus = (Get-AzAutomationJob -ResourceGroupName 'LabAutomation' -AutomationAccountName 'LabAutomation' -id $job.JobId).Status
+    do {
+        # Waiting for job to complete
+        Start-Sleep 5
+        $i++
+        $labInstance = "$labUserPrefix" + ($jobs.IndexOf($job) + 1)
+        Write-Progress -Activity 'Deploying Labs' -Status $labInstance -PercentComplete ($i*3) -CurrentOperation "Deployment status: $jobStatus"
+        $jobStatus = (Get-AzAutomationJob -ResourceGroupName 'LabAutomation' -AutomationAccountName 'LabAutomation' -id $job.JobId).Status
     }
+    until (($jobStatus.Trim() -eq 'Completed') -or ($jobStatus.Trim() -eq 'Failed'))
+}
+Write-Progress -Activity 'Deploying Labs' -Completed
+
+ForEach ($job in $jobs) {
+        Write-Host $labUserPrefix ($jobs.IndexOf($job) + 1) "Lab Environment:" -ForegroundColor Green
+        $output = (Get-AzAutomationJobOutput -ResourceGroupName 'LabAutomation' -AutomationAccountName 'LabAutomation' -id $job.JobId).Summary
+        ForEach ($summary in $output) {write-host $summary}
+        Write-Host ""
 }
