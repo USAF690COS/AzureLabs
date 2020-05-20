@@ -20,8 +20,8 @@
   <AllowPNG/>
  </OfficeDocumentSettings>
  <ExcelWorkbook xmlns="urn:schemas-microsoft-com:office:excel">
-  <WindowHeight>2888</WindowHeight>
-  <WindowWidth>11115</WindowWidth>
+  <WindowHeight>4268</WindowHeight>
+  <WindowWidth>9083</WindowWidth>
   <WindowTopX>32767</WindowTopX>
   <WindowTopY>32767</WindowTopY>
   <ProtectStructure>False</ProtectStructure>
@@ -41,7 +41,7 @@
   </Style>
  </Styles>
  <Worksheet ss:Name="Sheet1">
-  <Table ss:ExpandedColumnCount="15" ss:ExpandedRowCount="46" x:FullColumns="1"
+  <Table ss:ExpandedColumnCount="15" ss:ExpandedRowCount="48" x:FullColumns="1"
    x:FullRows="1" ss:DefaultColumnWidth="51" ss:DefaultRowHeight="14.25">
    <Column ss:Width="185.625"/>
    <Column ss:AutoFitWidth="0" ss:Width="135.75"/>
@@ -183,7 +183,30 @@
     <Cell ss:Index="7"><Data ss:Type="String">Trn_Lab_001_Net</Data></Cell>
     <Cell ss:Index="9"><Data ss:Type="String">Static 10.10.0.22</Data></Cell>
    </Row>
-   <Row ss:Index="15" ss:AutoFitHeight="0">
+   <Row ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">TrnLabCMW10-02</Data></Cell>
+    <Cell><Data ss:Type="String">Virtual Machine</Data></Cell>
+    <Cell><Data ss:Type="String">West US 2</Data></Cell>
+    <Cell><Data ss:Type="String">Trn_Lab_DCrepl_001</Data></Cell>
+    <Cell><Data ss:Type="String">CreatedBy</Data></Cell>
+    <Cell><Data ss:Type="String">Jon</Data></Cell>
+    <Cell><Data ss:Type="String">Trn_Lab_001_Net</Data></Cell>
+    <Cell><Data ss:Type="String">10.10.0.0/24</Data></Cell>
+    <Cell><Data ss:Type="String">Static 10.10.0.23</Data></Cell>
+    <Cell><Data ss:Type="String">LocalAdmin</Data></Cell>
+    <Cell><Data ss:Type="String">Passw0rdPassw0rd</Data></Cell>
+    <Cell><Data ss:Type="String">Area01.lab</Data></Cell>
+    <Cell ss:Index="15"><Data ss:Type="String">Addt'l Windows 10 Ent 1809 - SCCM workstation client</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">trnlabcmw10-0261</Data></Cell>
+    <Cell><Data ss:Type="String">Network Interface</Data></Cell>
+    <Cell><Data ss:Type="String">West US 2</Data></Cell>
+    <Cell><Data ss:Type="String">Trn_Lab_DCrepl_001</Data></Cell>
+    <Cell ss:Index="7"><Data ss:Type="String">Trn_Lab_001_Net</Data></Cell>
+    <Cell ss:Index="9"><Data ss:Type="String">Static 10.10.0.23</Data></Cell>
+   </Row>
+   <Row ss:Index="17" ss:AutoFitHeight="0">
     <Cell><Data ss:Type="String">TrnLabDCreplDH1</Data></Cell>
     <Cell><Data ss:Type="String">Virtual Machine</Data></Cell>
     <Cell><Data ss:Type="String">West US 2</Data></Cell>
@@ -205,7 +228,7 @@
     <Cell><Data ss:Type="String">Trn_Lab_DCrepl_001</Data></Cell>
     <Cell ss:Index="9"><Data ss:Type="String">Static 10.10.0.8</Data></Cell>
    </Row>
-   <Row ss:Index="18" ss:AutoFitHeight="0">
+   <Row ss:Index="20" ss:AutoFitHeight="0">
     <Cell><Data ss:Type="String">Trn_Lab_DCrepl_001</Data></Cell>
     <Cell><Data ss:Type="String">Res Group</Data></Cell>
     <Cell><Data ss:Type="String">West US 2</Data></Cell>
@@ -251,7 +274,7 @@
     <Cell><Data ss:Type="String">DOT</Data></Cell>
     <Cell><Data ss:Type="String">REPL</Data></Cell>
    </Row>
-   <Row ss:Index="26" ss:AutoFitHeight="0">
+   <Row ss:Index="28" ss:AutoFitHeight="0">
     <Cell><Data ss:Type="String">TrnLabVault</Data></Cell>
     <Cell><Data ss:Type="String">Recovery Services Vault</Data></Cell>
     <Cell><Data ss:Type="String">West US 2</Data></Cell>
@@ -267,7 +290,7 @@
     <Cell><Data ss:Type="String">Resource Group</Data></Cell>
     <Cell ss:Index="4"><Data ss:Type="String">Trn_Lab_AzureBackup</Data></Cell>
    </Row>
-   <Row ss:Index="30" ss:AutoFitHeight="0">
+   <Row ss:Index="32" ss:AutoFitHeight="0">
     <Cell><Data ss:Type="String">TrnLabDCreplDC1_snap041020</Data></Cell>
     <Cell><Data ss:Type="String">Snapshot</Data></Cell>
     <Cell><Data ss:Type="String">West US 2</Data></Cell>
@@ -285,7 +308,7 @@
     <Cell><Data ss:Type="String">REPL</Data></Cell>
     <Cell ss:Index="15"><Data ss:Type="String">TrnLabDCreplDC2 snapshot as of 04/10/20. 2 DCs plus DHCP svr and Win10 joined + DNS registrations</Data></Cell>
    </Row>
-   <Row ss:Index="33" ss:AutoFitHeight="0">
+   <Row ss:Index="35" ss:AutoFitHeight="0">
     <Cell><Data ss:Type="String">TrnLabDCreplDC1_snapshot040920</Data></Cell>
     <Cell><Data ss:Type="String">Snapshot</Data></Cell>
     <Cell><Data ss:Type="String">West US 2</Data></Cell>
@@ -303,7 +326,7 @@
     <Cell><Data ss:Type="String">REPL</Data></Cell>
     <Cell ss:Index="15"><Data ss:Type="String">TrnLabDCreplDC2 snapshot as of 04/09/20. Only 2 DCs in domain- no SCCM/DHCP/client added to the domain.</Data></Cell>
    </Row>
-   <Row ss:Index="36" ss:AutoFitHeight="0">
+   <Row ss:Index="38" ss:AutoFitHeight="0">
     <Cell><Data ss:Type="String">TrnLabCMPS1_CLDisk_snap041320</Data></Cell>
     <Cell><Data ss:Type="String">Snapshot</Data></Cell>
     <Cell><Data ss:Type="String">West US 2</Data></Cell>
@@ -366,7 +389,7 @@
     <Cell><Data ss:Type="String">Trn_Lab_DCrepl_001</Data></Cell>
     <Cell ss:Index="15"><Data ss:Type="String">Snap of Windows 10 SCCM client - Used for SDC App deployment scenarios and troubleshooting</Data></Cell>
    </Row>
-   <Row ss:Index="46" ss:AutoFitHeight="0">
+   <Row ss:Index="48" ss:AutoFitHeight="0">
     <Cell><Data ss:Type="String">Microsoft Team</Data></Cell>
     <Cell><Data ss:Type="String">AAD Security Group</Data></Cell>
     <Cell ss:Index="15"><Data ss:Type="String">Used for IAM policies for resources within the subscription</Data></Cell>
@@ -383,7 +406,7 @@
    <FreezePanes/>
    <FrozenNoSplit/>
    <SplitHorizontal>1</SplitHorizontal>
-   <TopRowBottomPane>16</TopRowBottomPane>
+   <TopRowBottomPane>1</TopRowBottomPane>
    <ActivePane>2</ActivePane>
    <Panes>
     <Pane>
@@ -391,7 +414,7 @@
     </Pane>
     <Pane>
      <Number>2</Number>
-     <ActiveRow>45</ActiveRow>
+     <ActiveRow>13</ActiveRow>
     </Pane>
    </Panes>
    <ProtectObjects>False</ProtectObjects>

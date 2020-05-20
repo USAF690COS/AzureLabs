@@ -37,6 +37,7 @@
                 "dc1",
                 "dhcp",
                 "sccm",
+                "sccmadv",
                 "gpa"
             ],            
             "metadata": {
