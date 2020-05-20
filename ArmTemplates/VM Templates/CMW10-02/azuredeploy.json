@@ -1,0 +1,183 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+    },
+    "variables": {
+      "rgName": "[resourceGroup().name]",
+      "location": "[resourceGroup().location]",
+      "snapshotResourceGroup": "[concat('vmImages-', variables('location'))]",
+      "storageAccountName": "[concat('vmimagevhds', variables('location'))]",
+      "storageAccountResourceID": "[resourceId(variables('snapshotResourceGroup'), 'Microsoft.Storage/storageAccounts', variables('storageAccountName'))]",
+      "vmName": "CMW10-02",
+      "osType": "Windows",
+      "vmSize": "Standard_A2_v2",
+      "virtualNetworkName": "[concat('vnet-',variables('rgName'))]",
+      "subnetName": "Subnet1",
+      "subnetRef": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworkName'),  variables('subnetName'))]",
+      "nicName": "[concat(variables('vmName'), '-nic1')]",
+      "lastOctetIP": "23",
+      "lbNATPort": "[concat('60', padLeft(variables('lastOctetIP'), 3, '0'))]",
+      "lbNATRuleName": "[concat(variables('vmName'), '-NAT-In')]",
+      "privateIPAddress": "[concat('10.10.0.', variables('lastOctetIP'))]",
+      "publicIPAddressName": "[concat('PIP-', variables('rgName'))]",
+      "lbName": "[concat('LB-', variables('rgName'))]",
+      "availabilitySetName": "[concat('AS-', variables('rgName'))]",
+      "resourceTags": "[resourceGroup().tags]"
+    },
+    "resources": [
+      {
+        "apiVersion": "2015-06-15",
+        "type": "Microsoft.Network/networkInterfaces",
+        "name": "[variables('nicName')]",
+        "location": "[variables('location')]",
+        "tags": "[variables('resourceTags')]",
+        "dependsOn": [
+          "[resourceId('Microsoft.Network/loadBalancers', variables('lbName'))]",
+          "[concat(resourceId('Microsoft.Network/loadBalancers', variables('lbName')), '/inboundNatRules/', variables('vmName'), '-NAT-In')]"
+        ],
+        "properties": {
+          "ipConfigurations": [
+            {
+              "name": "ipconfig1",
+              "properties": {
+                "privateIPAllocationMethod": "Static",
+                "privateIPAddress": "[variables('privateIPAddress')]",
+                "subnet": {
+                  "id": "[variables('subnetRef')]"
+                },
+                "loadBalancerBackendAddressPools": [
+                  {
+                    "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('lbName')), '/backendAddressPools/', variables('rgName'))]"
+                  }
+                ],
+                "loadBalancerInboundNatRules": [
+                  {
+                    "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('lbName')), '/inboundNatRules/', variables('vmName'), '-NAT-In')]"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      },
+      {
+        "type": "Microsoft.Compute/disks",
+        "apiVersion": "2019-07-01",
+        "name": "[concat(variables('vmName'), '_OSdisk')]",
+        "location": "[variables('location')]",
+        "sku": {
+            "name": "Standard_LRS",
+            "tier": "Standard"
+        },
+        "properties": {
+            "osType": "Windows",
+            "hyperVGeneration": "V1",
+            "creationData": {
+                "createOption": "Copy",
+                "sourceResourceId": "[resourceId(variables('snapshotResourceGroup'), 'Microsoft.Compute/snapshots', reference(variables('storageAccountResourceID'), '2018-07-01', 'Full').tags['TrnLabCMW10-02Active'])]"
+            },
+            "diskSizeGB": 128,
+            "diskIOPSReadWrite": 500,
+            "diskMBpsReadWrite": 100,
+            "encryption": {
+                "type": "EncryptionAtRestWithPlatformKey"
+            }
+        }
+      },
+      {
+        "apiVersion": "2017-03-30",
+        "type": "Microsoft.Compute/virtualMachines",
+        "name": "[variables('vmName')]",
+        "location": "[variables('location')]",
+        "tags": "[variables('resourceTags')]",
+        "dependsOn": [
+          "[concat('Microsoft.Network/networkInterfaces/', variables('nicName'))]",
+          "[concat(variables('vmName'), '_OSdisk')]"
+        ],
+        "properties": {
+          "availabilitySet": {
+            "id": "[resourceId('Microsoft.Compute/availabilitySets',variables('availabilitySetName'))]"
+          },
+          "hardwareProfile": {
+            "vmSize": "[variables('vmSize')]"
+          },
+          "storageProfile": {
+            "osDisk": {
+              "osType": "[variables('osType')]",
+              "caching": "ReadWrite",
+              "createOption": "Attach",
+              "managedDisk": {
+                "id": "[resourceId('Microsoft.Compute/disks', concat(variables('vmName'), '_OSdisk'))]"
+              }
+            }
+          },
+          "networkProfile": {
+            "networkInterfaces": [
+              {
+                "id": "[resourceId('Microsoft.Network/networkInterfaces',variables('nicName'))]"
+              }
+            ]
+          }
+        }
+      },
+      {
+        "apiVersion": "2019-11-01",
+        "type": "Microsoft.Network/loadBalancers",
+        "name": "[variables('lbName')]",
+        "location": "[variables('location')]",
+        "tags": "[variables('resourceTags')]",
+        "sku": {
+            "name": "Basic"
+        },
+        "properties": {
+            "frontendIPConfigurations": [
+                {
+                    "name": "LoadBalancerFrontEnd",
+                    "properties": {
+                        "publicIPAddress": {
+                            "id": "[resourceId('Microsoft.Network/publicIPAddresses',variables('publicIPAddressName'))]"
+                        }
+                    }
+                }
+            ],
+            "backendAddressPools": [
+                {
+                    "name": "[variables('RGName')]"
+                }
+            ]
+        }
+      },
+      {
+        "apiVersion": "2019-11-01",
+        "type": "Microsoft.Network/loadBalancers/inboundNatRules",
+        "name": "[concat(variables('lbName'), '/', variables('lbNATRuleName'))]",
+        "location": "[variables('location')]",
+        "properties": {
+          "frontendIPConfiguration": {
+              "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('lbName')), '/frontendIPConfigurations/LoadBalancerFrontEnd')]"
+          },
+          "frontendPort": "[variables('lbNATPort')]",
+          "backendPort": 3389,
+          "enableFloatingIP": false,
+          "idleTimeoutInMinutes": 4,
+          "protocol": "Tcp",
+          "enableTcpReset": false
+        }
+      }
+    ],
+    "outputs": {
+        "VMName": {
+            "type": "string",
+            "value": "[variables('vmName')]"
+        },
+        "PublicIPResourceID": {
+            "type": "string",
+            "value": "[resourceId(variables('rgName'),'Microsoft.Network/publicIPAddresses',variables('publicIPAddressName'))]"
+        },
+        "VMPublicPort": {
+            "type": "string",
+            "value": "[variables('lbNATPort')]"
+        }
+    }    
+}
