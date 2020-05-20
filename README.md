@@ -34,3 +34,44 @@ The VM Templates folder contains subfolders for each VM that can be deployed as 
 ## Azure Infrastructure
 In addition to the lab environment resources that will be deployed to Azure for new lab instances, the solution also leverages Microsoft Azure for the configuration of the master lab environment, from which all VM deployments are referenced, as well as automation and maintenance activities for the solution.
 
+### Lab Automation Account
+RG: LabAutomation
+Automation Account: LabAutomation
+ Runbooks:
+- BackupVMs
+- DeployLab
+- ProvisionImageSnapshots
+  Variables:
+- MasterRGName
+
+### Key Vault
+RG: LabKeys
+Key Vault: USAF-690COS-LabKeys
+ Secrets:
+- snapStorageKey-westus
+- snapStorageKey-westus2
+
+### Snapshot Repository
+RG: MasterImageSnapshots
+- Snapshots of each master VM disk, timestamped with date/time of image snap
+- This is essentailly your snapshot repository
+
+### Master Resource Group
+RG: <MasterRGName>
+- Master RG, contains all resources for the master environment
+ Virtual Machines
+- all
+ VNET
+- VNET used by master VMs
+NICs, PIPs, etc
+- basically, this is the master environment that you are going to mirror. any resources required to build the replica labs should reside here, in the same RG, on the same VNET.
+
+### VM Image Snapshots (per region)
+RG: vmImages-<regionName>
+- Snapshots of current/recent master VM disks that are used for deployment within the region
+Storage Account: vmimagevhds<regionName>
+ Tags:
+- Active/Rollback tags for each VM disk. Used by ARM templates in dpeloyment of VMs. To update to a newer deployment image, update the tag to target the new snapshot.
+ Containers: vmimages
+- vhd files from each VM disk image snapshot. These are copied out to each region from the 'MasterImageSnapshots' RG. Once the VHD has been copied, a snapshot can be generated from the VHD file to be used in VM deployment within the region.
+
