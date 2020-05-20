@@ -96,6 +96,7 @@
                         "resourceTags": "[resourceGroup().tags]",
                         "lbName": "[concat('LB-', variables('rgName'))]",
                         "publicIPAddressName": "[concat('PIP-', variables('rgName'))]",
+                        "publicIPAddressDNS" : "[toLower(concat(variables('rgName'),'-690cos'))]",
                         "publicIPAddressType": "Dynamic",
                         "availabilitySetName": "[concat('AS-', variables('rgName'))]"
                     },
@@ -150,7 +151,10 @@
                             "location": "[variables('location')]",
                             "tags": "[variables('resourceTags')]",
                             "properties": {
-                                "publicIPAllocationMethod": "[variables('publicIPAddressType')]"
+                                "publicIPAllocationMethod": "[variables('publicIPAddressType')]",
+                                "dnsSettings": {
+                                    "domainNameLabel": "[variables('publicIPAddressDNS')]"
+                                }
                             }
                         },
                         {
