@@ -11,8 +11,8 @@ The azuredeploy.json template in the AzureLabs/ArmTemplates/Deploy Lab folder is
 
 The template contains the following input parameters to be supplied during deployment:
 
-| Parameter name | Description |
-| -------------- | ----------- |
+| Parameter | Description |
+| --------- | ----------- |
 | userName | The name of the user creating the lab, used in the Resource Group name |
 | location | The Azure region where the new lab instance will be deployed |
 | labName | The name of the lab definition, or type of lab, that will be deployed |
