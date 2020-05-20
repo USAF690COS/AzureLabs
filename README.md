@@ -35,29 +35,26 @@ The VM Templates folder contains subfolders for each VM that can be deployed as 
 In addition to the lab environment resources that will be deployed to Azure for new lab instances, the solution also leverages Microsoft Azure for the configuration of the master lab environment, from which all VM deployments are referenced, as well as automation and maintenance activities for the solution.  
 
 ### Lab Automation Account
-RG: LabAutomation  
+Resource Group: LabAutomation  
 Automation Account: LabAutomation  
- Runbooks:  
+ Runbooks:
 - BackupVMs
 - DeployLab
 - ProvisionImageSnapshots  
+
   Variables:  
 - MasterRGName  
   
 ### Key Vault
-RG: LabKeys  
+Resource Group: LabKeys  
 Key Vault: USAF-690COS-LabKeys  
- Secrets:  
+ 
+ Secrets:
 - snapStorageKey-westus
 - snapStorageKey-westus2  
 
-### Snapshot Repository
-RG: MasterImageSnapshots  
-- Snapshots of each master VM disk, timestamped with date/time of image snap
-- This is essentailly your snapshot repository  
-
 ### Master Resource Group
-RG: <MasterRGName>  
+Resource Group: *MasterRGName*  
 - Master RG, contains all resources for the master environment  
  Virtual Machines  
 - all  
@@ -65,11 +62,16 @@ RG: <MasterRGName>
 - VNET used by master VMs  
 NICs, PIPs, etc  
 - basically, this is the master environment that you are going to mirror. any resources required to build the replica labs should reside here, in the same RG, on the same VNET.  
-  
+
+### Master Snapshot Repository
+Resource Group: MasterImageSnapshots  
+- Snapshots of each master VM disk, timestamped with date/time of image snap
+- This is essentailly your snapshot repository  
+
 ### VM Image Snapshots (per region)
-RG: vmImages-<regionName>  
+Resource Group: vmImages-*regionName*  
 - Snapshots of current/recent master VM disks that are used for deployment within the region
-Storage Account: vmimagevhds<regionName>  
+Storage Account: vmimagevhds*regionName*  
  Tags:  
 - Active/Rollback tags for each VM disk. Used by ARM templates in dpeloyment of VMs. To update to a newer deployment image, update the tag to target the new snapshot.  
  Containers: vmimages  
