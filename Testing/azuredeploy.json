@@ -8,10 +8,15 @@
             "metadata": {
                 "description": "storage account name."
             }
+        },
+        "utcValue": {
+            "type": "string",
+            "defaultValue": "[utcNow()]"
         }
     },
     "variables": {
         "storageAccountRG": "[concat('vmImages-', variables('location'))]",
+        "randomInt": "[substring(uniqueString(parameters('utcValue')),0,6)]",
         "rgName": "[resourceGroup().name]",
         "location": "[resourceGroup().location]",
         "storageAccountName": "[concat('vmimagevhds', variables('location'))]",
