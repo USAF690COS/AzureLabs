@@ -20,8 +20,8 @@
   <AllowPNG/>
  </OfficeDocumentSettings>
  <ExcelWorkbook xmlns="urn:schemas-microsoft-com:office:excel">
-  <WindowHeight>8130</WindowHeight>
-  <WindowWidth>18195</WindowWidth>
+  <WindowHeight>12375</WindowHeight>
+  <WindowWidth>24300</WindowWidth>
   <WindowTopX>32767</WindowTopX>
   <WindowTopY>32767</WindowTopY>
   <ProtectStructure>False</ProtectStructure>
@@ -56,7 +56,7 @@
    <Column ss:AutoFitWidth="0" ss:Width="93.375" ss:Span="1"/>
    <Column ss:Index="13" ss:AutoFitWidth="0" ss:Width="83.625"/>
    <Column ss:AutoFitWidth="0" ss:Width="97.125"/>
-   <Column ss:AutoFitWidth="0" ss:Width="837.375"/>
+   <Column ss:AutoFitWidth="0" ss:Width="984.75"/>
    <Row ss:AutoFitHeight="0">
     <Cell><Data ss:Type="String">Resource Name</Data></Cell>
     <Cell><Data ss:Type="String">Resource Type</Data></Cell>
@@ -156,7 +156,7 @@
     <Cell ss:Index="10"><Data ss:Type="String">LocalAdmin</Data></Cell>
     <Cell><Data ss:Type="String">Passw0rdPassw0rd</Data></Cell>
     <Cell><Data ss:Type="String">Area01.lab</Data></Cell>
-    <Cell ss:Index="15"><Data ss:Type="String">3 accounts to use GPAeditor- to modify GPOs, GPAapprover to approve and export GPOs, GPAadmin to modify GPA permissions. All pw = Passw0rdPassw0rd</Data></Cell>
+    <Cell ss:Index="15"><Data ss:Type="String">3 accounts to use: GPAeditor- to modify GPOs, GPAapprover to approve and export GPOs, GPAadmin to modify GPA permissions. All pw = Passw0rdPassw0rd. Created in Administration/Administrative Account/690 COS OU</Data></Cell>
    </Row>
    <Row ss:AutoFitHeight="0">
     <Cell><Data ss:Type="String">TrnLabGpaSQdb</Data></Cell>
@@ -462,7 +462,7 @@
    </PageSetup>
    <Unsynced/>
    <Selected/>
-   <LeftColumnVisible>11</LeftColumnVisible>
+   <LeftColumnVisible>13</LeftColumnVisible>
    <FreezePanes/>
    <FrozenNoSplit/>
    <SplitHorizontal>1</SplitHorizontal>
@@ -474,7 +474,7 @@
     </Pane>
     <Pane>
      <Number>2</Number>
-     <ActiveRow>12</ActiveRow>
+     <ActiveRow>9</ActiveRow>
      <ActiveCol>14</ActiveCol>
     </Pane>
    </Panes>
