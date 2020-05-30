@@ -2,10 +2,10 @@
 Deployment Templates Repo for Azure Training &amp; Test labs for 690 COS
 
 ## Solution Overivew
-The Azure Lab solution is a cloud-based testing, training, and development environment that is used to orchestrate the deployment and configuration of lab instances based on a master lab environment. The solution is designed to take a single master lab environment that closely resembles a production environment and replicate all VMs or a subset of VMs to meet training, testing, and development needs of technicians.
+The Azure Lab solution is a cloud-based testing, training, and development environment that is used to orchestrate the deployment and configuration of lab instances based on a master lab environment. The solution is designed to take a single master lab environment that closely resembles a production environment and replicate all VMs or a subset of VMs to create a new disposable lab instance that meets the training, testing, and development needs of  the technicians.
 
 
-The solution leverages IaaS and PaaS workloads running in Azure, as well as a GitHub repository for deployment of all services. 
+The solution leverages IaaS and PaaS workloads running in Azure and a GitHub repository for automated deployment of all lab services. 
 
 
 ## Deployment Templates (GitHub)

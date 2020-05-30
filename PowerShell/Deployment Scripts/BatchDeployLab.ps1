@@ -1,3 +1,8 @@
+# Get current subscription
+$subscription = Get-AzSubscription
+$SubscriptionId = $subscription.Id
+Select-AzSubscription -SubscriptionId $SubscriptionId
+
 # Get number of labs to deploy
 Write-Host "How many labs would you like to deploy?" -ForegroundColor Green -NoNewline
 Write-Host "(Max 10)" -ForegroundColor Blue
