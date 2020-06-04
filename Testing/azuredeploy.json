@@ -21,7 +21,7 @@
         "location": "[resourceGroup().location]",
         "storageAccountName": "[concat('vmimagevhds', variables('location'))]",
         "storageAccountResourceID": "[resourceId(variables('storageAccountRG'), 'Microsoft.Storage/storageAccounts', variables('storageAccountName'))]",
-        "vmName": "DC1",
+        "vmName": "TrnLabDCreplDC1",
         "snapShotTagID": "[concat(variables('vmName'), 'Active')]"
     },
     "resources": [
@@ -29,7 +29,13 @@
     "outputs": {
         "ActiveVM": {
             "type": "string",
-            "value": "[concat(variables('storageAccountRG'), '/', variables('storageAccountName'), '/', reference(variables('storageAccountResourceID'), '2018-07-01', 'Full').tags.DC1Active)]"
+            "value": "[concat(variables('storageAccountRG'), '/', variables('storageAccountName'), '/', reference(variables('storageAccountResourceID'), '2018-07-01', 'Full').tags.TrnLabDCreplDC1Active)]"
+        },
+        "HyperVGen": {
+            "type": "string",
+            "value": "[reference(resourceId(variables('storageAccountResourceID'), reference(variables('storageAccountResourceID'), '2018-07-01', 'Full').tags.TrnLabGpaSQdbActive), '2018-07-01', 'Full').HyperVGeneration)]"
+
+
         }
     }    
 }

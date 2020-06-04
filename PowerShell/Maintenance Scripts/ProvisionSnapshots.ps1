@@ -26,6 +26,10 @@ ForEach ($region in $regions) {
 
     # Find all disks for VM and create snapshot for each VHD
     ForEach ($vmName in $vms) {
+        # Get VM Generation (V1 or V2)
+        $vmSourceDisk = (Get-AzVM -ResourceGroupName $masterResourceGroupName -Name $vmName).StorageProfile.OsDisk.Name
+        $vmGen = (Get-AzDisk -ResourceGroupName $masterResourceGroupName -DiskName $vmSourceDisk).HyperVGeneration
+        
         # Find OS Disk
         $vmOSDisk = $vmName + '-T'
         $osVHD = Get-AzStorageBlob -Container "vmimages" -Context $storageContext -Blob $vmOSDisk* | Sort-Object LastModified -Descending | Select-Object -First 1
@@ -42,7 +46,7 @@ ForEach ($region in $regions) {
             $diskName = $sourceVHDName.Replace($diskTimestamp,"")
 
             #Create Snapshot from VHD file
-            $snapshotConfig = New-AzSnapshotConfig -AccountType $storageType -Location $location -CreateOption Import -StorageAccountId $storageAccountId -SourceUri $sourceVHDURI -HyperVGeneration 'V2'
+            $snapshotConfig = New-AzSnapshotConfig -AccountType $storageType -Location $location -CreateOption Import -StorageAccountId $storageAccountId -SourceUri $sourceVHDURI -HyperVGeneration $vmGen
             $snapshotProvisioningState = New-AzSnapshot -Snapshot $snapshotConfig -ResourceGroupName $resourceGroupName -SnapshotName $snapshotName
 
             # If snapshot provisioning succeeds:

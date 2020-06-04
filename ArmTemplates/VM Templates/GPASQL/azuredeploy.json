@@ -12,6 +12,7 @@
       "vmName": "GPASQL",
       "osType": "Windows",
       "vmSize": "Standard_B2ms",
+      "vmGeneration": "V1",
       "virtualNetworkName": "[concat('vnet-',variables('rgName'))]",
       "subnetName": "Subnet1",
       "subnetRef": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworkName'),  variables('subnetName'))]",
@@ -72,7 +73,7 @@
         },
         "properties": {
             "osType": "Windows",
-            "hyperVGeneration": "V2",
+            "hyperVGeneration": "[variables('vmGeneration')]",
             "creationData": {
                 "createOption": "Copy",
                 "sourceResourceId": "[resourceId(variables('snapshotResourceGroup'), 'Microsoft.Compute/snapshots', reference(variables('storageAccountResourceID'), '2018-07-01', 'Full').tags.TrnLabGpaSQdbActive)]"
