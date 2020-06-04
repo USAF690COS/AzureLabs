@@ -28,7 +28,7 @@ $jobs = @()
 For ($labNumber=1; $labNumber -le $labCount; $labNumber++) {
     If ($labCount -gt 1) {$userName = $labUserPrefix + $labNumber}
     Else {$userName = $labUserPrefix}
-    $runbookParameters = @{"userName"=$userName;"location"=$location.ToLower();"labName"=$labName.ToLower()}
+    $runbookParameters = @{"userName"=$userName.ToLower();"location"=$location.ToLower();"labName"=$labName.ToLower()}
     $jobs += Start-AzAutomationRunbook -AutomationAccountName 'LabAutomation' -ResourceGroupName 'LabAutomation' -Name 'DeployLab' -Parameters $runbookParameters    
 }
 
