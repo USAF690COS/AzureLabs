@@ -1,4 +1,4 @@
 {
   "itemDisplayName": "Deploy Lab",
-  "description": "Template to deploy new  lab environment infrastructure and deploy lab vm instances from linked templates"
+  "description": "Template to deploy new lab environment infrastructure and deploy lab vm instances from linked templates"
 }
