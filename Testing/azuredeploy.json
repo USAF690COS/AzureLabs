@@ -2,33 +2,15 @@
     "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "storageAccountTest": {
-            "type": "string",
-            "defaultValue": "testDefaultValue",
-            "metadata": {
-                "description": "storage account name."
-            }
-        },
-        "utcValue": {
-            "type": "string",
-            "defaultValue": "[utcNow()]"
-        }
     },
     "variables": {
-        "storageAccountRG": "[concat('vmImages-', variables('location'))]",
-        "randomInt": "[substring(uniqueString(parameters('utcValue')),0,6)]",
-        "location": "westus",
-        "storageAccountName": "[concat('vmimagevhds', variables('location'))]",
-        "storageAccountResourceID": "[resourceId(variables('storageAccountRG'), 'Microsoft.Storage/storageAccounts', variables('storageAccountName'))]",
-        "vmName": "TrnLabDCreplDC1",
-        "snapShotTagID": "[concat(variables('vmName'), 'Active')]"
     },
     "resources": [
     ],
     "outputs": {
         "ActiveVM": {
             "type": "string",
-            "value": "[concat(variables('storageAccountRG'), '/', variables('storageAccountName'), '/', reference(variables('storageAccountResourceID'), '2018-07-01', 'Full').tags.TrnLabDCreplDC1Active)]"
+            "value": "New-AzSubscriptionDeployment succeeded!"
         }
         
     }    
