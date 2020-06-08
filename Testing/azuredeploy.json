@@ -2,15 +2,62 @@
     "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
+        "userName": {
+            "type": "string",
+            "metadata": {
+                "description": "Unique User Name"
+            }
+        },
+        "location": {
+            "type": "string",
+            "allowedValues": [
+                "westus",
+                "westus2"
+            ],                
+            "metadata": {
+                "description": "Lab deployment region"
+            }
+        },
+        "labType": {
+            "type": "string",
+            "allowedValues": [
+                "DSO",
+                "VRO"
+            ],
+            "defaultValue": "DSO",
+            "metadata": {
+                "description": "Lab operator role type"
+            }
+
+        },
+        "labName": {
+            "type": "string",
+            "allowedValues": [
+                "dcpromo",
+                "dc1",
+                "dhcp",
+                "sccm",
+                "sccmadv",
+                "gpa"
+            ],            
+            "metadata": {
+                "description": "Lab scenario name"
+            }
+
+        },
+        "utcValue": {
+            "type": "string",
+            "defaultValue": "[utcNow()]"
+        }
     },
     "variables": {
     },
     "resources": [
     ],
     "outputs": {
-        "ActiveVM": {
+        "TestOutput": {
             "type": "string",
-            "value": "New-AzSubscriptionDeployment succeeded!"
+            "value": "[concat('AzSubscriptionDeployment succeeded in ',parameters('location'))]"
         }
         
     }    
