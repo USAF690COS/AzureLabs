@@ -17,8 +17,7 @@
     "variables": {
         "storageAccountRG": "[concat('vmImages-', variables('location'))]",
         "randomInt": "[substring(uniqueString(parameters('utcValue')),0,6)]",
-        "rgName": "[resourceGroup().name]",
-        "location": "[resourceGroup().location]",
+        "location": "westus",
         "storageAccountName": "[concat('vmimagevhds', variables('location'))]",
         "storageAccountResourceID": "[resourceId(variables('storageAccountRG'), 'Microsoft.Storage/storageAccounts', variables('storageAccountName'))]",
         "vmName": "TrnLabDCreplDC1",
