@@ -4,7 +4,8 @@
 
     .NOTES
         AUTHOR: Kevin Dillon
-        LASTEDIT: 5-14-2020
+        LAST EDIT: 6-8-2020
+        LAST CHANGE: Moved runbook to new RG, updated output to write FQDN vs. PIP
 
     .PARAMETER labName
         The name of the lab instance type to deploy.
@@ -53,21 +54,13 @@ while(!($connectionResult) -And ($logonAttempt -le 10))
     Start-Sleep -Seconds 30
 }
 
-<# NO LONGER USED: Get current user context to find user ID
-If ($userName -eq 'currentUserID') {
-    # Get username of current user
-    $jobID = $PsPrivateMetadata.JobId.Guid
-    $userName = (Get-AzAutomationJob -ResourceGroupName 'LabAutomation' -AutomationAccountName 'LabAutomation' -id $jobID).StartedBy  #| Select-Object -Property *
-}
-#>
-
 <#
-    Start Master VM image backup script
+    Start lab deployment script
 #>
 
 $templateUri = "https://raw.githubusercontent.com/USAF690COS/AzureLabs/master/ArmTemplates/Deploy%20Lab/azuredeploy.json"
 $templateParameters = @{
-    userName = $userName
+    userName = $userName.ToLower()
     location = $location.ToLower()
     labName = $labName.ToLower()
 }

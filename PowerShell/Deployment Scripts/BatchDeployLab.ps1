@@ -29,7 +29,7 @@ For ($labNumber=1; $labNumber -le $labCount; $labNumber++) {
     If ($labCount -gt 1) {$userName = $labUserPrefix + $labNumber}
     Else {$userName = $labUserPrefix}
     $runbookParameters = @{"userName"=$userName.ToLower();"location"=$location.ToLower();"labName"=$labName.ToLower()}
-    $jobs += Start-AzAutomationRunbook -AutomationAccountName 'LabAutomation' -ResourceGroupName 'LabAutomation' -Name 'DeployLab' -Parameters $runbookParameters    
+    $jobs += Start-AzAutomationRunbook -AutomationAccountName 'LabDeployAutomation' -ResourceGroupName 'LabDeployAutomation' -Name 'DeployLab' -Parameters $runbookParameters    
 }
 
 Write-Host "Your labs are being deployed in Azure."  -ForegroundColor Magenta
@@ -37,14 +37,14 @@ Write-Host "Once your labs are ready, your VM connection information will be pro
 
 ForEach ($job in $jobs) {
     $i=0
-    $jobStatus = (Get-AzAutomationJob -ResourceGroupName 'LabAutomation' -AutomationAccountName 'LabAutomation' -id $job.JobId).Status
+    $jobStatus = (Get-AzAutomationJob -ResourceGroupName 'LabDeployAutomation' -AutomationAccountName 'LabDeployAutomation' -id $job.JobId).Status
     do {
         # Waiting for job to complete
         Start-Sleep 5
         $i++
         $labInstance = "$labUserPrefix" + ($jobs.IndexOf($job) + 1)
         Write-Progress -Activity 'Deploying Labs' -Status $labInstance -PercentComplete ($i*3) -CurrentOperation "Deployment status: $jobStatus"
-        $jobStatus = (Get-AzAutomationJob -ResourceGroupName 'LabAutomation' -AutomationAccountName 'LabAutomation' -id $job.JobId).Status
+        $jobStatus = (Get-AzAutomationJob -ResourceGroupName 'LabDeployAutomation' -AutomationAccountName 'LabDeployAutomation' -id $job.JobId).Status
     }
     until (($jobStatus.Trim() -eq 'Completed') -or ($jobStatus.Trim() -eq 'Failed'))
 }
@@ -52,7 +52,7 @@ Write-Progress -Activity 'Deploying Labs' -Completed
 
 ForEach ($job in $jobs) {
         Write-Host $labUserPrefix ($jobs.IndexOf($job) + 1) "Lab Environment:" -ForegroundColor Green
-        $output = (Get-AzAutomationJobOutput -ResourceGroupName 'LabAutomation' -AutomationAccountName 'LabAutomation' -id $job.JobId).Summary
+        $output = (Get-AzAutomationJobOutput -ResourceGroupName 'LabDeployAutomation' -AutomationAccountName 'LabDeployAutomation' -id $job.JobId).Summary
         ForEach ($summary in $output) {write-host $summary}
         Write-Host ""
 }

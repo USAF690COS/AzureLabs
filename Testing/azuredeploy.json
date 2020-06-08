@@ -30,12 +30,7 @@
         "ActiveVM": {
             "type": "string",
             "value": "[concat(variables('storageAccountRG'), '/', variables('storageAccountName'), '/', reference(variables('storageAccountResourceID'), '2018-07-01', 'Full').tags.TrnLabDCreplDC1Active)]"
-        },
-        "HyperVGen": {
-            "type": "string",
-            "value": "[reference(resourceId(variables('storageAccountResourceID'), reference(variables('storageAccountResourceID'), '2018-07-01', 'Full').tags.TrnLabGpaSQdbActive), '2018-07-01', 'Full').HyperVGeneration)]"
-
-
         }
+        
     }    
 }
