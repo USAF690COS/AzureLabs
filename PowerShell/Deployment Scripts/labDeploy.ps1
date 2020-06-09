@@ -25,7 +25,6 @@ $templateParameters = @{
     labName = $labName.ToLower()
 }
 
-#$templateParameters = @{"userName"=$userName;"location"=$location.ToLower();"labName"=$labName.ToLower()}
 $deploymentName = "$userName-$labName-$location"
 
 $outputs = New-AzSubscriptionDeployment -Location $location -name $deploymentName -TemplateUri $templateUri -TemplateParameterObject $templateParameters
