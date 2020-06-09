@@ -19,7 +19,7 @@ Write-Host "(Options: dcpromo, dhcp, gpa, sccm, sccmadv)" -ForegroundColor Blue
 $labName = Read-Host
 
 # Azure region to deploy lab
-Write-Host "Type to Azure region where the lab will be deployed" -ForegroundColor Green -NoNewline
+Write-Host "Azure region where the lab(s) will be deployed" -ForegroundColor Green -NoNewline
 Write-Host "(Options: westus, westus2)" -ForegroundColor Blue
 $location = Read-Host
 
@@ -40,10 +40,11 @@ ForEach ($job in $jobs) {
     $jobStatus = (Get-AzAutomationJob -ResourceGroupName 'LabAutomation' -AutomationAccountName 'LabAutomation' -id $job.JobId).Status
     do {
         # Waiting for job to complete
-        Start-Sleep 5
+        Start-Sleep 1
         $i++
+        If ($i -le 100) {$percentComplete = $i}
         $labInstance = "$labUserPrefix" + ($jobs.IndexOf($job) + 1)
-        Write-Progress -Activity 'Deploying Labs' -Status $labInstance -PercentComplete ($i) -CurrentOperation "Deployment status: $jobStatus"
+        Write-Progress -Activity 'Deploying Labs' -Status $labInstance -PercentComplete ($percentComplete) -CurrentOperation "Deployment status: $jobStatus"
         $jobStatus = (Get-AzAutomationJob -ResourceGroupName 'LabAutomation' -AutomationAccountName 'LabAutomation' -id $job.JobId).Status
     }
     until (($jobStatus.Trim() -eq 'Completed') -or ($jobStatus.Trim() -eq 'Failed'))
