@@ -5,7 +5,7 @@ Select-AzSubscription -SubscriptionId $SubscriptionId
 
 # Get number of labs to deploy
 Write-Host "How many labs would you like to deploy?" -ForegroundColor Green -NoNewline
-Write-Host "(Max 10)" -ForegroundColor Blue
+Write-Host "(Max 30)" -ForegroundColor Blue
 $labCount = Read-Host
 
 # Get lab name prefix (e.g. 'Student')
@@ -15,7 +15,7 @@ $labUserPrefix = Read-Host
 
 # Get the lab type
 Write-Host "Lab template to deploy" -ForegroundColor Green -NoNewline
-Write-Host "(Options: dcpromo or dhcp)" -ForegroundColor Blue
+Write-Host "(Options: dcpromo, dhcp, gpa, sccm, sccmadv)" -ForegroundColor Blue
 $labName = Read-Host
 
 # Azure region to deploy lab
@@ -43,7 +43,7 @@ ForEach ($job in $jobs) {
         Start-Sleep 5
         $i++
         $labInstance = "$labUserPrefix" + ($jobs.IndexOf($job) + 1)
-        Write-Progress -Activity 'Deploying Labs' -Status $labInstance -PercentComplete ($i*3) -CurrentOperation "Deployment status: $jobStatus"
+        Write-Progress -Activity 'Deploying Labs' -Status $labInstance -PercentComplete ($i) -CurrentOperation "Deployment status: $jobStatus"
         $jobStatus = (Get-AzAutomationJob -ResourceGroupName 'LabAutomation' -AutomationAccountName 'LabAutomation' -id $job.JobId).Status
     }
     until (($jobStatus.Trim() -eq 'Completed') -or ($jobStatus.Trim() -eq 'Failed'))
