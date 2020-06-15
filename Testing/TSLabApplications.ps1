@@ -4,7 +4,7 @@
         the app from installing on targeted systems.
 #>
 
-#Temporary sets execution policy for this session. Uncomment line below.
+#Sets execution policy for this session, if code-signing is enabled. Uncomment line below.
 #Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process
 
 #region Connect to ConfigMgr Site
