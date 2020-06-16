@@ -261,30 +261,7 @@
           "protocol": "Tcp",
           "enableTcpReset": false
         }
-      },
-      {
-        "type": "Microsoft.Compute/virtualMachines/extensions",
-        "apiVersion": "2019-07-01",
-        "name": "[concat(variables('vmName'),'/', 'MapScriptShare')]",
-        "location": "[variables('location')]",
-        "dependsOn": [
-          "[concat('Microsoft.Compute/virtualMachines/',variables('vmName'))]"
-        ],
-        "properties": {
-          "publisher": "Microsoft.Compute",
-          "type": "CustomScriptExtension",
-          "typeHandlerVersion": "1.9",
-          "autoUpgradeMinorVersion": true,
-          "settings": {
-            "fileUris": [
-              "https://st690coslab001.blob.core.windows.net/cse/CreateScheduledTask.ps1?sp=r&se=2020-06-16T13:45:38Z&sv=2019-10-10&sr=b&sig=%2BKAxGWR%2FCiTm4g3xyTtx5WCy45MHYootmiHJTIPr%2ByA%3D"
-            ],
-            "commandToExecute": "powershell.exe -ExecutionPolicy Bypass -File CreateScheduledTask.ps1"
-          },
-          "protectedSettings": {}
-        }
-
-      }      
+      }     
     ],
     "outputs": {
         "VMName": {
