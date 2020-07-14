@@ -67,8 +67,8 @@
         "name": "[concat(variables('vmName'), '_OSdisk')]",
         "location": "[variables('location')]",
         "sku": {
-            "name": "Premium_LRS",
-            "tier": "Premium"
+            "name": "StandardSSD_LRS",
+            "tier": "Standard"
         },
         "properties": {
             "osType": "Windows",
@@ -79,7 +79,7 @@
             },
             "diskSizeGB": 128,
             "diskIOPSReadWrite": 500,
-            "diskMBpsReadWrite": 100,
+            "diskMBpsReadWrite": 60,
             "encryption": {
                 "type": "EncryptionAtRestWithPlatformKey"
             }
@@ -91,8 +91,8 @@
         "name": "[concat(variables('vmName'), '_DataDisk_0')]",
         "location": "[variables('location')]",
         "sku": {
-            "name": "Premium_LRS",
-            "tier": "Premium"
+            "name": "StandardSSD_LRS",
+            "tier": "Standard"
         },
         "properties": {
             "osType": "Windows",
@@ -101,8 +101,8 @@
                 "sourceResourceId": "[resourceId(variables('snapshotResourceGroup'), 'Microsoft.Compute/snapshots', reference(variables('storageAccountResourceID'), '2018-07-01', 'Full').tags.TrnLabCMPS1_DataDisk_0Active)]"
             },
             "diskSizeGB": 129,
-            "diskIOPSReadWrite": 1100,
-            "diskMBpsReadWrite": 125,
+            "diskIOPSReadWrite": 500,
+            "diskMBpsReadWrite": 60,
             "encryption": {
                 "type": "EncryptionAtRestWithPlatformKey"
             }
@@ -114,8 +114,8 @@
         "name": "[concat(variables('vmName'), '_CMDisk')]",
         "location": "[variables('location')]",
         "sku": {
-            "name": "Premium_LRS",
-            "tier": "Premium"
+            "name": "StandardSSD_LRS",
+            "tier": "Standard"
         },
         "properties": {
             "osType": "Windows",
@@ -125,7 +125,7 @@
             },
             "diskSizeGB": 128,
             "diskIOPSReadWrite": 500,
-            "diskMBpsReadWrite": 100,
+            "diskMBpsReadWrite": 60,
             "encryption": {
                 "type": "EncryptionAtRestWithPlatformKey"
             }
