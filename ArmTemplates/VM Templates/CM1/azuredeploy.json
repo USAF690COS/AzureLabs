@@ -73,9 +73,9 @@
             "osType": "Windows",
             "hyperVGeneration": "V2",
             "creationData": {
-                "createOption": "Copy",
-                "sourceResourceId": "[resourceId(variables('snapshotResourceGroup'), 'Microsoft.Compute/snapshots', reference(variables('storageAccountResourceID'), '2018-07-01', 'Full').tags.TrnLabCMPS1Active)]"
+                "createOption": "Copy"
             },
+            "sourceResourceId": "[resourceId(variables('snapshotResourceGroup'), 'Microsoft.Compute/snapshots', reference(variables('storageAccountResourceID'), '2018-07-01', 'Full').tags.TrnLabCMPS1Active)]",
             "diskSizeGB": 128,
             "diskIOPSReadWrite": 500,
             "diskMBpsReadWrite": 60,
