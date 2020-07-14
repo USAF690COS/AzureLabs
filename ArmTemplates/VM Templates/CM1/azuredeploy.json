@@ -67,8 +67,7 @@
         "name": "[concat(variables('vmName'), '_OSdisk')]",
         "location": "[variables('location')]",
         "sku": {
-            "name": "Premium_LRS",
-            "tier": "Standard"
+            "name": "StandardSSD_LRS"
         },
         "properties": {
             "osType": "Windows",
@@ -91,8 +90,7 @@
         "name": "[concat(variables('vmName'), '_DataDisk_0')]",
         "location": "[variables('location')]",
         "sku": {
-            "name": "Premium_LRS",
-            "tier": "Standard"
+            "name": "StandardSSD_LRS"
         },
         "properties": {
             "osType": "Windows",
@@ -114,8 +112,7 @@
         "name": "[concat(variables('vmName'), '_CMDisk')]",
         "location": "[variables('location')]",
         "sku": {
-            "name": "Premium_LRS",
-            "tier": "Standard"
+            "name": "StandardSSD_LRS"
         },
         "properties": {
             "osType": "Windows",
