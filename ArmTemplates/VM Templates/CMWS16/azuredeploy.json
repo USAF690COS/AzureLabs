@@ -67,8 +67,7 @@
         "name": "[concat(variables('vmName'), '_OSdisk')]",
         "location": "[variables('location')]",
         "sku": {
-            "name": "Standard_LRS",
-            "tier": "Standard"
+            "name": "StandardSSD_LRS"
         },
         "properties": {
             "osType": "Windows",
@@ -79,14 +78,14 @@
             },
             "diskSizeGB": 128,
             "diskIOPSReadWrite": 500,
-            "diskMBpsReadWrite": 100,
+            "diskMBpsReadWrite": 60,
             "encryption": {
                 "type": "EncryptionAtRestWithPlatformKey"
             }
         }
       },
       {
-        "apiVersion": "2017-03-30",
+        "apiVersion": "2018-06-01",
         "type": "Microsoft.Compute/virtualMachines",
         "name": "[variables('vmName')]",
         "location": "[variables('location')]",
