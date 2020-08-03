@@ -1,9 +1,9 @@
 <# 
 For each region, do the following
     -Check for and temporarily delete any resource group locks
-    -Search the vmImages resource group for any snapshots
-    -Keep only the 4 most recent snapshots per disk, delete all others
-    -Search vmimages container, keep only the 4 most recent snapshots per disk, delete all others
+    -Get a list of snapshots at the resource group level
+    -Get a list of blobs in the vmimages container
+    -Keep only the 4 most recent snapshots/blobs per disk, delete all others
     -Reapply resource group locks
 #>
 
@@ -16,8 +16,8 @@ $lockLevel = "CanNotDelete"
 $lockNotes = "DO NOT DELETE! This resource is a critical component of the MIcrosoft deployed Lab Solution."
 
 $storageAccountPrefix = "vmimagevhds"
-$regions = "westus"
-$numOfSnapshotsToKeep = 4
+$regions = "westus", "westus2"
+$numOfImagesToKeep = 4
 #endregion - Define variables
 
 #region - Work
@@ -29,7 +29,7 @@ Select-AzSubscription -SubscriptionId $SubscriptionId
 $masterResourceGroupName = (Get-AzAutomationVariable -AutomationAccountName LabAutomation -Name 'MasterRGName' -ResourceGroupName 'LabAutomation').Value
 
 #Get list of VM names in the Master resource group
-$vms = (Get-AzVM -ResourceGroupName $masterResourceGroupName).name
+$vmNames = (Get-AzVM -ResourceGroupName $masterResourceGroupName).name
 
 ForEach ($region in $regions) {
     $resourceGroupName = "vmImages-" + $region
@@ -38,129 +38,90 @@ ForEach ($region in $regions) {
     $rgLock = Get-AzResourceLock -ResourceGroupName $resourceGroupName -LockName $lockName
     If($rgLock) {
         #RG is locked, must delete before editing
-        #Remove-AzResourceLock -ResourceGroupName $resourceGroupName -LockName $lockName -Force
+        Write-Host "Removing resource group lock: $rgLock.Name `n"
+        #Remove-AzResourceLock -ResourceGroupName $resourceGroupName -LockName $lockName -Force -WhatIf
     }
     #endregion - Remove resource lock
-
-    #$location = (Get-AzResourceGroup -Name $resourceGroupName).Location
-
-    <#
+    
+    #Define storage account variables
     $storageAccountName = $storageAccountPrefix + $region
     $storageContainerName = "vmimages"
-    #$storageAccount = Get-AzStorageAccount -ResourceGroupName $resourceGroupName -Name $storageAccountName
-    #$storageAccountId = $storageAccount.Id
     $keyName = "snapStorageKey-" + $region    
     $storageAccountKey = (Get-AzKeyVaultSecret -vaultName "USAF-690COS-LabKeys" -name $keyName).SecretValueText
     $storageContext = New-AzStorageContext -StorageAccountName $storageAccountName -StorageAccountKey $storageAccountKey
-    
-    #$blobs = Get-AzStorageBlob -Container $storageContainerName -Context $storageContext 
-    #>
-    ForEach ($vmName in $vms) {
+
+    ForEach ($vmName in $vmNames) {
         #Get a list of disks for that VM
         $vmInstanceInfo = Get-AzVM -ResourceGroupName $masterResourceGroupName -Name $vmName -Status
-        $vmDisks = $vmInstanceInfo.Disks.Name
-        ForEach ($vmDisk in $vmDisks) {
-            $vmAllSnaps = @()
-            $vmSnapsToKeep = @()
+        $vmDiskNames = $vmInstanceInfo.Disks.Name
+        
+        ForEach ($vmDisk in $vmDiskNames) {
+            #region - Cleanup snapshots and blobs
             If($vmDisk.Contains("OsDisk")) {
-                #This is an OS Disk
-                #Write-Output "OSDisk = [$vmDisk] `n"
-                $vmOSSnapshotName = $vmDisk.Split("_")[0] + '-T'
-                $vmAllSnaps = (Get-AzSnapshot -ResourceGroupName $resourceGroupName -SnapshotName $vmOSSnapshotName*)
-                $vmSnapsToKeep = (Get-AzSnapshot -ResourceGroupName $resourceGroupName -SnapshotName $vmOSSnapshotName*) | Sort-Object -Bottom $numOfSnapshotsToKeep
-                ForEach ($snap in $vmAllSnaps) {
-                    If(!$vmAllSnaps.Contains($snap)) {
+                #Define OS disk name
+                $vmOSDiskName = $vmDisk.Split("_")[0] + '-T'
+                
+                #Get all snapshots and blobs for this OS Disk
+                $vmAllOSSnaps = (Get-AzSnapshot -ResourceGroupName $resourceGroupName -SnapshotName $vmOSDiskName*).Name
+                $vmAllOSBlobs = (Get-AzStorageBlob -Container $storageContainerName -Context $storageContext -Blob $vmOSDiskName*).Name
+                
+                #Get list of snapshots and blobs to keep
+                $vmOSSnapsToKeep = (Get-AzSnapshot -ResourceGroupName $resourceGroupName -SnapshotName $vmOSDiskName*).Name | Sort-Object -Bottom $numOfImagesToKeep
+                $vmOSBlobsToKeep = (Get-AzStorageBlob -Container $storageContainerName -Context $storageContext -Blob $vmOSDiskName*).Name | Sort-Object -Bottom $numOfImagesToKeep
+
+                #Search thru all snapshots
+                ForEach ($snap in $vmAllOSSnaps) {
+                    If(!$vmOSSnapsToKeep.Contains($snap)) {
                         #OS snapshot is not in list to keep, delete it
-                        Write-Output "Delete snapshot = $snap `n"
+                        Write-Host "Delete snapshot = $snap `n"
                         #Remove-AzSnapshot -ResourceGroupName $resourceGroupName -SnapshotName $snap -Force -WhatIf
                     }
                 }
-                #Write-Output "OSSnapshotname = $vmOSSnapshotName `n"
+
+                #Search thru all blobs
+                ForEach ($blob in $vmAllOSBlobs) {
+                    If(!$vmOSBlobsToKeep.Contains($blob)) {
+                        #OS blob is not in list to keep, delete it
+                        Write-Host "Delete OS blob = $blob `n"
+                        #Remove-AzStorageBlob -Container $storageContainerName -Blob $blob -Force -WhatIf
+                    }
+                }
             }
             Else {
                 #This is a data disk
-                #Write-Output "DataDisk = $vmDisk `n"
-                $vmAllSnaps = (Get-AzSnapshot -ResourceGroupName $resourceGroupName -SnapshotName $vmDisk*)
-                $vmSnapsToKeep = (Get-AzSnapshot -ResourceGroupName $resourceGroupName -SnapshotName $vmDisk*) | Sort-Object -Bottom $numOfSnapshotsToKeep
-                ForEach ($snap in $vmAllSnaps) {
-                    If(!$vmAllSnaps.Contains($snap)) {
-                        #Datadisk snapshot in list to keep, delete it
-                        Write-Output "Delete snapshot = $snap `n"
+                
+                #Get list snapshots and blobs for this data disk
+                $vmAllDataDiskSnaps = (Get-AzSnapshot -ResourceGroupName $resourceGroupName -SnapshotName $vmDisk*).Name
+                $vmAllDataDiskBlobs = (Get-AzStorageBlob -Container $storageContainerName -Context $storageContext -Blob $vmDisk*).Name
+                
+                #Get list of snapshots and blobs to keep
+                $vmDataDiskSnapsToKeep = (Get-AzSnapshot -ResourceGroupName $resourceGroupName -SnapshotName $vmDisk*).Name | Sort-Object -Bottom $numOfImagesToKeep
+                $vmDataDiskBlobsToKeep = (Get-AzStorageBlob -Container $storageContainerName -Context $storageContext -Blob $vmDisk*).Name | Sort-Object -Bottom $numOfImagesToKeep                
+
+                #Search thru all snapshots
+                ForEach ($snap in $vmAllDataDiskSnaps) {
+                    If(!$vmDataDiskSnapsToKeep.Contains($snap)) {
+                        #Datadisk snapshot is not in list to keep, delete it
+                        Write-Host "Delete snapshot = $snap `n"
                         #Remove-AzSnapshot -ResourceGroupName $resourceGroupName -SnapshotName $snap -Force -WhatIf
                     }
                 }
-            }
-        }
 
-        #For each disk, keep the last 4 instances
-        <#
-        #region - OSDisk
-        #Define OS disk name
-        $vmOSSnapshotName = $vmName + '-T'
-       
-        #Get a list of all the OS snapshots for this VM
-        $vmAllOSsnapshots = (Get-AzSnapshot -ResourceGroupName $resourceGroupName -SnapshotName $vmOSSnapshotName*).Name
-
-        #Get last 4 snapshots for the OS disk
-        $vmOSsnapshotsToKeep = (Get-AzSnapshot -ResourceGroupName $resourceGroupName -SnapshotName $vmOSSnapshotName*).Name | Sort-Object -Bottom $numOfSnapshotsToKeep
-
-        #Compare each OSsnapshot to the OSsnapshots to keep
-        ForEach ($vmSnapshot in $vmAllOSsnapshots) {
-            If(!$vmOSsnapshotsToKeep.Contains($vmSnapshot)) {
-                #vmSnapshot is not in list to keep, delete snapshot
-                Write-Output "Delete snapshot= [$vmSnapshot] `n"
-                #Remove-AzSnapshot -ResourceGroupName $resourceGroupName -SnapshotName $vmSnapshot -Force -WhatIf
-            }
-        }
-        #endregion - OSDisk
-
-        #region - DataDisks
-        If($vmInstanceInfo.Disks.Count -gt 1) {
-            #This VM has data disks
-            $vmDataDisks = For($i=1;$i -lt $vmInstanceInfo.Disks.Count;$i++) {$vmInstanceInfo.Disks[$i].Name}
-            ForEach ($vmDataDisk in $vmDataDisks) {
-                #Get all data disk snapshots for this disk
-                $vmAllDataDisksnapshots = (Get-AzSnapshot -ResourceGroupName $resourceGroupName -SnapshotName $vmDataDisk*).Name
-
-                #Get list of snapshots to keep
-                $vmDataDisksnapshotsToKeep = (Get-AzSnapshot -ResourceGroupName $resourceGroupName -SnapshotName $vmDataDisk*).Name | Sort-Object -Bottom $numOfSnapshotsToKeep
-
-                ForEach ($vmSnapshot in $vmAllDataDisksnapshots) {
-                    If(!$vmDataDisksnapshotsToKeep.Contains($vmSnapshot)) {
-                        #vmSnapshot is not in list to keep, delete snapshot
-                        Write-Output "Delete snapshot= [$vmSnapshot] `n"
-                        #Remove-AzSnapshot -ResourceGroupName $resourceGroupName -SnapshotName $vmSnapshot -Force -WhatIf
+                #Search thru all blobs
+                ForEach ($blob in $vmAllDataDiskBlobs) {
+                    If(!$vmDataDiskBlobsToKeep.Contains($blob)) {
+                        #Datadisk blob is not in list to keep, delete it
+                        Write-Host "Delete blob = $blob `n"
+                        #Remove-AzStorageBlob -Container $storageContainerName -Blob $blob -Force -WhatIf
                     }
                 }
-
             }
+            #endregion - Cleanup snapshots and blobs
         }
-
-        #endregion - GetDisks
-        #>
-        <#
-        $osVHD = Get-AzStorageBlob -Container "vmimages" -Context $storageContext -Blob $vmOSDisk* | Sort-Object LastModified -Descending | Select-Object -First 1
-        $osVHDName = $osVHD.name
-
-        # Search for corresponding data disks with same timestamp
-        $diskTimestamp = $osVHDName.Replace($vmName, "")
-        $allDisks = Get-AzStorageBlob -Container "vmimages" -Context $storageContext -Blob $vmName* | Where-Object -Property Name -Like *$diskTimestamp
-        ForEach ($disk in $allDisks) {
-            $sourceVHDName = $disk.name
-            $sourceVHDURI = $disk.ICloudBlob.Uri.AbsoluteUri
-            $snapshotName = $sourceVHDName.Replace(".vhd","")
-            
-            #$diskName = $sourceVHDName.Replace($diskTimestamp,"")
-
-            #Create Snapshot from VHD file
-            #$snapshotConfig = New-AzSnapshotConfig -AccountType $storageType -Location $location -CreateOption Import -StorageAccountId $storageAccountId -SourceUri $sourceVHDURI -HyperVGeneration $vmGen
-            #$snapshotProvisioningState = New-AzSnapshot -Snapshot $snapshotConfig -ResourceGroupName $resourceGroupName -SnapshotName $snapshotName
-        } #>
-    }
-        
+    }      
     #region - Readd resource group ock
+    Write-Host "Reapplying resource group lock: $lockName `n"
     #New-AzResourceLock -LockName $lockName -LockLevel $lockLevel -LockNotes $lockNotes -ResourceGroupName $resourceGroupName -Force
-    #endregion - Readd resource group lock
-    
+    #endregion - Readd resource group lock   
 }
 #endregion - Work
