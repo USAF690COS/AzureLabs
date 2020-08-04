@@ -119,7 +119,7 @@ ForEach ($region in $regions) {
             #endregion - Cleanup snapshots and blobs
         }
     }      
-    #region - Readd resource group ock
+    #region - Readd resource group lock
     Write-Host "Reapplying resource group lock: $lockName `n"
     #New-AzResourceLock -LockName $lockName -LockLevel $lockLevel -LockNotes $lockNotes -ResourceGroupName $resourceGroupName -Force
     #endregion - Readd resource group lock   
