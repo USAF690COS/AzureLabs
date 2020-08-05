@@ -16,7 +16,7 @@ $lockLevel = "CanNotDelete"
 $lockNotes = "DO NOT DELETE! This resource is a critical component of the MIcrosoft deployed Lab Solution."
 
 $storageAccountPrefix = "vmimagevhds"
-$regions = "westus2"
+$regions = "westus", "westus2"
 $numOfImagesToKeep = 4
 #endregion - Define variables
 
@@ -28,7 +28,7 @@ $masterResourceGroupName = (Get-AzAutomationVariable -AutomationAccountName LabA
 
 #Get list of VM names in the Master resource group
 $vmNames = (Get-AzVM -ResourceGroupName $masterResourceGroupName).name
-
+#$vmNames = "TrnLabCMPS1", "TrnLabCMWS16", "TrnLabCMW10-01", "TrnLabCMW10-02"
 ForEach ($region in $regions) {
     $resourceGroupName = "vmImages-" + $region
     
@@ -36,8 +36,8 @@ ForEach ($region in $regions) {
     $rgLock = Get-AzResourceLock -ResourceGroupName $resourceGroupName -LockName $lockName
     If($rgLock) {
         #RG is locked, must delete before editing
-        #Write-Host "Removing resource group lock: $rgLock.Name `n"
-        Remove-AzResourceLock -ResourceGroupName $resourceGroupName -LockName $lockName -Force -WhatIf
+        Write-Host "Removing resource group lock: $rgLock.Name `n"
+        Remove-AzResourceLock -ResourceGroupName $resourceGroupName -LockName $lockName -Force
     }
     #endregion - Remove resource lock
     
@@ -71,8 +71,8 @@ ForEach ($region in $regions) {
                 ForEach ($snap in $vmAllOSSnaps) {
                     If(!$vmOSSnapsToKeep.Contains($snap)) {
                         #OS snapshot is not in list to keep, delete it
-                        #Write-Host "Delete snapshot = $snap `n"
-                        Remove-AzSnapshot -ResourceGroupName $resourceGroupName -SnapshotName $snap -Force -WhatIf
+                        Write-Host "Delete snapshot = $snap `n"
+                        Remove-AzSnapshot -ResourceGroupName $resourceGroupName -SnapshotName $snap -Force
                     }
                 }
 
@@ -80,8 +80,8 @@ ForEach ($region in $regions) {
                 ForEach ($blob in $vmAllOSBlobs) {
                     If(!$vmOSBlobsToKeep.Contains($blob)) {
                         #OS blob is not in list to keep, delete it
-                        #Write-Host "Delete OS blob = $blob `n"
-                        Remove-AzStorageBlob -Container $storageContainerName -Context $storageContext -Blob $blob -Force -WhatIf
+                        Write-Host "Delete OS blob = $blob `n"
+                        Remove-AzStorageBlob -Container $storageContainerName -Context $storageContext -Blob $blob -Force
                     }
                 }
             }
@@ -100,8 +100,8 @@ ForEach ($region in $regions) {
                 ForEach ($snap in $vmAllDataDiskSnaps) {
                     If(!$vmDataDiskSnapsToKeep.Contains($snap)) {
                         #Datadisk snapshot is not in list to keep, delete it
-                        #Write-Host "Delete snapshot = $snap `n"
-                        Remove-AzSnapshot -ResourceGroupName $resourceGroupName -SnapshotName $snap -Force -WhatIf
+                        Write-Host "Delete snapshot = $snap `n"
+                        Remove-AzSnapshot -ResourceGroupName $resourceGroupName -SnapshotName $snap -Force
                     }
                 }
 
@@ -109,8 +109,8 @@ ForEach ($region in $regions) {
                 ForEach ($blob in $vmAllDataDiskBlobs) {
                     If(!$vmDataDiskBlobsToKeep.Contains($blob)) {
                         #Datadisk blob is not in list to keep, delete it
-                        #Write-Host "Delete blob = $blob `n"
-                        Remove-AzStorageBlob -Container $storageContainerName -Context $storageContext -Blob $blob -Force -WhatIf
+                        Write-Host "Delete blob = $blob `n"
+                        Remove-AzStorageBlob -Container $storageContainerName -Context $storageContext -Blob $blob -Force
                     }
                 }
             }
@@ -118,7 +118,7 @@ ForEach ($region in $regions) {
         }
     }      
     #region - Readd resource group lock
-    #Write-Host "Reapplying resource group lock: $lockName `n"
-    New-AzResourceLock -LockName $lockName -LockLevel $lockLevel -LockNotes $lockNotes -ResourceGroupName $resourceGroupName -Force -WhatIf
+    Write-Host "Reapplying resource group lock: $lockName `n"
+    New-AzResourceLock -LockName $lockName -LockLevel $lockLevel -LockNotes $lockNotes -ResourceGroupName $resourceGroupName -Force
     #endregion - Readd resource group lock   
 }
