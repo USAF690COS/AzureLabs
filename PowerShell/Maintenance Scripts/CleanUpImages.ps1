@@ -16,7 +16,6 @@ $lockLevel = "CanNotDelete"
 $lockNotes = "DO NOT DELETE! This resource is a critical component of the MIcrosoft deployed Lab Solution."
 
 $storageAccountPrefix = "vmimagevhds"
-$regions = "westus", "westus2"
 $numOfImagesToKeep = 4
 #endregion - Define variables
 
@@ -25,11 +24,12 @@ Select-AzSubscription -SubscriptionId $SubscriptionId
 
 #Master resource group name set to Trn_Lab_DCrepl_001
 $masterResourceGroupName = (Get-AzAutomationVariable -AutomationAccountName LabAutomation -Name 'MasterRGName' -ResourceGroupName 'LabAutomation').Value
+$labRegions = (Get-AzAutomationVariable -AutomationAccountName LabAutomation -Name 'LabRegions' -ResourceGroupName 'LabAutomation').Value
 
 #Get list of VM names in the Master resource group
 $vmNames = (Get-AzVM -ResourceGroupName $masterResourceGroupName).name
 #$vmNames = "TrnLabCMPS1", "TrnLabCMWS16", "TrnLabCMW10-01", "TrnLabCMW10-02"
-ForEach ($region in $regions) {
+ForEach ($region in $labRegions) {
     $resourceGroupName = "vmImages-" + $region
     
     #region - Remove resource lock
