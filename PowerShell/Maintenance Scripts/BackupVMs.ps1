@@ -24,7 +24,7 @@ else {
 
 # Setup variables
 $storageAccountPrefix = "vmimagevhds"
-$regions = "westus", "westus2"
+$regions = (Get-AzAutomationVariable -AutomationAccountName LabAutomation -Name 'LabRegions' -ResourceGroupName 'LabAutomation').Value
 $masterImageRG = "MasterImageSnapshots"
 $location = (Get-AzResourceGroup -Name $sourceResourceGroupName).Location
 $sasExpiryDuration = "7200"
