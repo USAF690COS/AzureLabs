@@ -3,8 +3,18 @@ For each region, do the following
     -Check for and temporarily delete any resource group locks
     -Get a list of snapshots at the resource group level
     -Get a list of blobs in the vmimages container
-    -Keep only the 4 most recent snapshots/blobs per disk, delete all others
+    -Keep the 4 most recent snapshots/blobs per disk and 1 per month for the previous X months, delete all others
     -Reapply resource group locks
+
+    #v2.0
+    Keep 4 most recent snapshots/blobs as well as 1 from each month for the past X number of months
+    Variables to use
+    pastNumOfMonthsToKeep
+    Pseudocode
+    1. Get current month/date
+    2. For each of the previous X number of months, get the last snapshot/blob for that month and
+    add it to the list of snapshots/blobs to keep.
+    3. Loop thru all snapshots/blobs as usually only keeping the ones in the list to keep
 #>
 
 #region - Define variables
@@ -17,6 +27,7 @@ $lockNotes = "DO NOT DELETE! This resource is a critical component of the MIcros
 
 $storageAccountPrefix = "vmimagevhds"
 $numOfImagesToKeep = 4
+$numOfMonthsToKeep = 6
 #endregion - Define variables
 
 #Set the subscription context for this script
@@ -28,7 +39,6 @@ $labRegions = (Get-AzAutomationVariable -AutomationAccountName LabAutomation -Na
 
 #Get list of VM names in the Master resource group
 $vmNames = (Get-AzVM -ResourceGroupName $masterResourceGroupName).name
-#$vmNames = "TrnLabCMPS1", "TrnLabCMWS16", "TrnLabCMW10-01", "TrnLabCMW10-02"
 ForEach ($region in $labRegions) {
     $resourceGroupName = "vmImages-" + $region
     
@@ -37,7 +47,7 @@ ForEach ($region in $labRegions) {
     If($rgLock) {
         #RG is locked, must delete before editing
         Write-Host "Removing resource group lock: $rgLock.Name `n"
-        Remove-AzResourceLock -ResourceGroupName $resourceGroupName -LockName $lockName -Force
+        Remove-AzResourceLock -ResourceGroupName $resourceGroupName -LockName $lockName -Force -WhatIf
     }
     #endregion - Remove resource lock
     
@@ -63,25 +73,39 @@ ForEach ($region in $labRegions) {
                 $vmAllOSSnaps = (Get-AzSnapshot -ResourceGroupName $resourceGroupName -SnapshotName $vmOSDiskName*).Name
                 $vmAllOSBlobs = (Get-AzStorageBlob -Container $storageContainerName -Context $storageContext -Blob $vmOSDiskName*).Name
                 
-                #Get list of snapshots and blobs to keep
+                #Add last x snapshots and blobs to list to keep
                 $vmOSSnapsToKeep = (Get-AzSnapshot -ResourceGroupName $resourceGroupName -SnapshotName $vmOSDiskName*).Name | Sort-Object -Bottom $numOfImagesToKeep
                 $vmOSBlobsToKeep = (Get-AzStorageBlob -Container $storageContainerName -Context $storageContext -Blob $vmOSDiskName*).Name | Sort-Object -Bottom $numOfImagesToKeep
 
-                #Search thru all snapshots
+                #Add last X month's OS snapshot/blob to list to keep, 1 per month
+                $currentMonth = (Get-Date).Month
+                $currentYear = (Get-Date).Year
+                For($i=1;$i -le $numOfMonthsToKeep;$i++) {
+                    $days = $i * 30
+                    $timeSpan = New-TimeSpan -Days $days
+                    $currentMonth = "{0:D2}" -f ((Get-Date) - $timeSpan).Month
+                    $currentYear = ((Get-DAte) -$timeSpan).Year
+                    $lastSnapOfTheMonth = (Get-AzSnapshot -ResourceGroupName $resourceGroupName -SnapshotName $vmOSDiskName*$currentYear$currentMonth*).Name | Sort-Object -Bottom 1
+                    $lastBlobOfTheMonth = (Get-AzStorageBlob -Container $storageContainerName -Context $storageContext -Blob $vmOSDiskName*$currentYear$currentMonth*).Name | Sort-Object -Bottom 1
+                    $vmOSSnapsToKeep+=$lastSnapOfTheMonth
+                    $vmOSBlobsToKeep+=$lastBlobOfTheMonth
+                }
+
+                #Cleanup snapshots
                 ForEach ($snap in $vmAllOSSnaps) {
                     If(!$vmOSSnapsToKeep.Contains($snap)) {
                         #OS snapshot is not in list to keep, delete it
                         Write-Host "Delete snapshot = $snap `n"
-                        Remove-AzSnapshot -ResourceGroupName $resourceGroupName -SnapshotName $snap -Force
+                        Remove-AzSnapshot -ResourceGroupName $resourceGroupName -SnapshotName $snap -Force -WhatIf
                     }
                 }
 
-                #Search thru all blobs
+                #Cleanup blobs
                 ForEach ($blob in $vmAllOSBlobs) {
                     If(!$vmOSBlobsToKeep.Contains($blob)) {
                         #OS blob is not in list to keep, delete it
                         Write-Host "Delete OS blob = $blob `n"
-                        Remove-AzStorageBlob -Container $storageContainerName -Context $storageContext -Blob $blob -Force
+                        Remove-AzStorageBlob -Container $storageContainerName -Context $storageContext -Blob $blob -Force -WhatIf
                     }
                 }
             }
@@ -96,12 +120,26 @@ ForEach ($region in $labRegions) {
                 $vmDataDiskSnapsToKeep = (Get-AzSnapshot -ResourceGroupName $resourceGroupName -SnapshotName $vmDisk*).Name | Sort-Object -Bottom $numOfImagesToKeep
                 $vmDataDiskBlobsToKeep = (Get-AzStorageBlob -Container $storageContainerName -Context $storageContext -Blob $vmDisk*).Name | Sort-Object -Bottom $numOfImagesToKeep                
 
+                #Add last X month's data snapshot/blob to list to keep, 1 per month
+                $currentMonth = (Get-Date).Month
+                $currentYear = (Get-Date).Year
+                For($i=1;$i -le $numOfMonthsToKeep;$i++) {
+                    $days = $i * 30
+                    $timeSpan = New-TimeSpan -Days $days
+                    $currentMonth = "{0:D2}" -f ((Get-Date) - $timeSpan).Month
+                    $currentYear = ((Get-DAte) -$timeSpan).Year
+                    $lastSnapOfTheMonth = (Get-AzSnapshot -ResourceGroupName $resourceGroupName -SnapshotName $vmDisk*$currentYear$currentMonth*).Name | Sort-Object -Bottom 1
+                    $lastBlobOfTheMonth = (Get-AzStorageBlob -Container $storageContainerName -Context $storageContext -Blob $vmDisk*$currentYear$currentMonth*).Name | Sort-Object -Bottom 1
+                    $vmDataDiskSnapsToKeep+=$lastSnapOfTheMonth
+                    $vmDataDiskBlobsToKeep+=$lastBlobOfTheMonth
+                }
+
                 #Search thru all snapshots
                 ForEach ($snap in $vmAllDataDiskSnaps) {
                     If(!$vmDataDiskSnapsToKeep.Contains($snap)) {
                         #Datadisk snapshot is not in list to keep, delete it
                         Write-Host "Delete snapshot = $snap `n"
-                        Remove-AzSnapshot -ResourceGroupName $resourceGroupName -SnapshotName $snap -Force
+                        Remove-AzSnapshot -ResourceGroupName $resourceGroupName -SnapshotName $snap -Force -WhatIf
                     }
                 }
 
@@ -110,7 +148,7 @@ ForEach ($region in $labRegions) {
                     If(!$vmDataDiskBlobsToKeep.Contains($blob)) {
                         #Datadisk blob is not in list to keep, delete it
                         Write-Host "Delete blob = $blob `n"
-                        Remove-AzStorageBlob -Container $storageContainerName -Context $storageContext -Blob $blob -Force
+                        Remove-AzStorageBlob -Container $storageContainerName -Context $storageContext -Blob $blob -Force -WhatIf
                     }
                 }
             }
@@ -119,6 +157,6 @@ ForEach ($region in $labRegions) {
     }      
     #region - Readd resource group lock
     Write-Host "Reapplying resource group lock: $lockName `n"
-    New-AzResourceLock -LockName $lockName -LockLevel $lockLevel -LockNotes $lockNotes -ResourceGroupName $resourceGroupName -Force
+    New-AzResourceLock -LockName $lockName -LockLevel $lockLevel -LockNotes $lockNotes -ResourceGroupName $resourceGroupName -Force -WhatIf
     #endregion - Readd resource group lock   
 }
