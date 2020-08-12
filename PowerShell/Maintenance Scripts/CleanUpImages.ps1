@@ -5,16 +5,6 @@ For each region, do the following
     -Get a list of blobs in the vmimages container
     -Keep the 4 most recent snapshots/blobs per disk and 1 per month for the previous X months, delete all others
     -Reapply resource group locks
-
-    #v2.0
-    Keep 4 most recent snapshots/blobs as well as 1 from each month for the past X number of months
-    Variables to use
-    pastNumOfMonthsToKeep
-    Pseudocode
-    1. Get current month/date
-    2. For each of the previous X number of months, get the last snapshot/blob for that month and
-    add it to the list of snapshots/blobs to keep.
-    3. Loop thru all snapshots/blobs as usually only keeping the ones in the list to keep
 #>
 
 #region - Define variables
@@ -26,9 +16,12 @@ $lockLevel = "CanNotDelete"
 $lockNotes = "DO NOT DELETE! This resource is a critical component of the MIcrosoft deployed Lab Solution."
 
 $storageAccountPrefix = "vmimagevhds"
+
+#Keep the last 4 snaps and blobs for each VM disk
 $numOfImagesToKeep = 4
+
+#Keep 1 snap and blob for each VM disk. 1 per month for the past X months
 $numOfMonthsToKeep = 6
-#endregion - Define variables
 
 #Set the subscription context for this script
 Select-AzSubscription -SubscriptionId $SubscriptionId
@@ -36,6 +29,7 @@ Select-AzSubscription -SubscriptionId $SubscriptionId
 #Master resource group name set to Trn_Lab_DCrepl_001
 $masterResourceGroupName = (Get-AzAutomationVariable -AutomationAccountName LabAutomation -Name 'MasterRGName' -ResourceGroupName 'LabAutomation').Value
 $labRegions = (Get-AzAutomationVariable -AutomationAccountName LabAutomation -Name 'LabRegions' -ResourceGroupName 'LabAutomation').Value
+#endregion - Define variables
 
 #Get list of VM names in the Master resource group
 $vmNames = (Get-AzVM -ResourceGroupName $masterResourceGroupName).name
@@ -51,7 +45,7 @@ ForEach ($region in $labRegions) {
     }
     #endregion - Remove resource lock
     
-    #Define storage account variables
+    #Define storage account variables for this region
     $storageAccountName = $storageAccountPrefix + $region
     $storageContainerName = "vmimages"
     $keyName = "snapStorageKey-" + $region    
@@ -81,12 +75,20 @@ ForEach ($region in $labRegions) {
                 $currentMonth = (Get-Date).Month
                 $currentYear = (Get-Date).Year
                 For($i=1;$i -le $numOfMonthsToKeep;$i++) {
+                    #Define timespan by number of days to search for snaps and blobs
+                    #For example, if $i = 2, timespan to search is 60 days/2 months from current date/time.
                     $days = $i * 30
                     $timeSpan = New-TimeSpan -Days $days
+                    
+                    #Get the year and month value for that timespan. Two digit month and 4 digit year
                     $currentMonth = "{0:D2}" -f ((Get-Date) - $timeSpan).Month
                     $currentYear = ((Get-DAte) -$timeSpan).Year
+
+                    #Get the last snap and blob from that Year/Month 
                     $lastSnapOfTheMonth = (Get-AzSnapshot -ResourceGroupName $resourceGroupName -SnapshotName $vmOSDiskName*$currentYear$currentMonth*).Name | Sort-Object -Bottom 1
                     $lastBlobOfTheMonth = (Get-AzStorageBlob -Container $storageContainerName -Context $storageContext -Blob $vmOSDiskName*$currentYear$currentMonth*).Name | Sort-Object -Bottom 1
+                    
+                    #Add snap/blob names to list to keep
                     $vmOSSnapsToKeep+=$lastSnapOfTheMonth
                     $vmOSBlobsToKeep+=$lastBlobOfTheMonth
                 }
@@ -124,12 +126,20 @@ ForEach ($region in $labRegions) {
                 $currentMonth = (Get-Date).Month
                 $currentYear = (Get-Date).Year
                 For($i=1;$i -le $numOfMonthsToKeep;$i++) {
+                    #Define timespan by number of days to search for snaps and blobs
+                    #For example, if $i = 2, timespan to search is 60 days/2 months from current date/time.
                     $days = $i * 30
                     $timeSpan = New-TimeSpan -Days $days
+
+                    #Get the year and month value for that timespan. Two digit month and 4 digit year
                     $currentMonth = "{0:D2}" -f ((Get-Date) - $timeSpan).Month
                     $currentYear = ((Get-DAte) -$timeSpan).Year
+
+                    #Get the last snap and blob from that Year/Month 
                     $lastSnapOfTheMonth = (Get-AzSnapshot -ResourceGroupName $resourceGroupName -SnapshotName $vmDisk*$currentYear$currentMonth*).Name | Sort-Object -Bottom 1
                     $lastBlobOfTheMonth = (Get-AzStorageBlob -Container $storageContainerName -Context $storageContext -Blob $vmDisk*$currentYear$currentMonth*).Name | Sort-Object -Bottom 1
+                    
+                    #Add snap/blob names to list to keep
                     $vmDataDiskSnapsToKeep+=$lastSnapOfTheMonth
                     $vmDataDiskBlobsToKeep+=$lastBlobOfTheMonth
                 }
@@ -154,8 +164,9 @@ ForEach ($region in $labRegions) {
             }
             #endregion - Cleanup snapshots and blobs
         }
-    }      
-    #region - Readd resource group lock
+    }
+
+    #region - Reapply resource group lock
     Write-Host "Reapplying resource group lock: $lockName `n"
     New-AzResourceLock -LockName $lockName -LockLevel $lockLevel -LockNotes $lockNotes -ResourceGroupName $resourceGroupName -Force -WhatIf
     #endregion - Readd resource group lock   
