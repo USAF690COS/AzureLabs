@@ -28,7 +28,8 @@ Select-AzSubscription -SubscriptionId $SubscriptionId
 
 #Master resource group name set to Trn_Lab_DCrepl_001
 $masterResourceGroupName = (Get-AzAutomationVariable -AutomationAccountName LabAutomation -Name 'MasterRGName' -ResourceGroupName 'LabAutomation').Value
-$labRegions = (Get-AzAutomationVariable -AutomationAccountName LabAutomation -Name 'LabRegions' -ResourceGroupName 'LabAutomation').Value
+#$labRegions = (Get-AzAutomationVariable -AutomationAccountName LabAutomation -Name 'LabRegions' -ResourceGroupName 'LabAutomation').Value
+$labRegions = "westus"
 #endregion - Define variables
 
 #Get list of VM names in the Master resource group
@@ -41,7 +42,7 @@ ForEach ($region in $labRegions) {
     If($rgLock) {
         #RG is locked, must delete before editing
         Write-Host "Removing resource group lock: $rgLock.Name `n"
-        Remove-AzResourceLock -ResourceGroupName $resourceGroupName -LockName $lockName -Force -WhatIf
+        Remove-AzResourceLock -ResourceGroupName $resourceGroupName -LockName $lockName -Force
     }
     #endregion - Remove resource lock
     
@@ -98,7 +99,7 @@ ForEach ($region in $labRegions) {
                     If(!$vmOSSnapsToKeep.Contains($snap)) {
                         #OS snapshot is not in list to keep, delete it
                         Write-Host "Delete snapshot = $snap `n"
-                        Remove-AzSnapshot -ResourceGroupName $resourceGroupName -SnapshotName $snap -Force -WhatIf
+                        Remove-AzSnapshot -ResourceGroupName $resourceGroupName -SnapshotName $snap -Force
                     }
                 }
 
@@ -107,7 +108,7 @@ ForEach ($region in $labRegions) {
                     If(!$vmOSBlobsToKeep.Contains($blob)) {
                         #OS blob is not in list to keep, delete it
                         Write-Host "Delete OS blob = $blob `n"
-                        Remove-AzStorageBlob -Container $storageContainerName -Context $storageContext -Blob $blob -Force -WhatIf
+                        Remove-AzStorageBlob -Container $storageContainerName -Context $storageContext -Blob $blob -Force
                     }
                 }
             }
@@ -149,7 +150,7 @@ ForEach ($region in $labRegions) {
                     If(!$vmDataDiskSnapsToKeep.Contains($snap)) {
                         #Datadisk snapshot is not in list to keep, delete it
                         Write-Host "Delete snapshot = $snap `n"
-                        Remove-AzSnapshot -ResourceGroupName $resourceGroupName -SnapshotName $snap -Force -WhatIf
+                        Remove-AzSnapshot -ResourceGroupName $resourceGroupName -SnapshotName $snap -Force
                     }
                 }
 
@@ -158,7 +159,7 @@ ForEach ($region in $labRegions) {
                     If(!$vmDataDiskBlobsToKeep.Contains($blob)) {
                         #Datadisk blob is not in list to keep, delete it
                         Write-Host "Delete blob = $blob `n"
-                        Remove-AzStorageBlob -Container $storageContainerName -Context $storageContext -Blob $blob -Force -WhatIf
+                        Remove-AzStorageBlob -Container $storageContainerName -Context $storageContext -Blob $blob -Force
                     }
                 }
             }
@@ -168,6 +169,6 @@ ForEach ($region in $labRegions) {
 
     #region - Reapply resource group lock
     Write-Host "Reapplying resource group lock: $lockName `n"
-    New-AzResourceLock -LockName $lockName -LockLevel $lockLevel -LockNotes $lockNotes -ResourceGroupName $resourceGroupName -Force -WhatIf
+    New-AzResourceLock -LockName $lockName -LockLevel $lockLevel -LockNotes $lockNotes -ResourceGroupName $resourceGroupName -Force
     #endregion - Readd resource group lock   
 }
