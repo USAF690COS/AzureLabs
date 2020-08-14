@@ -28,8 +28,7 @@ Select-AzSubscription -SubscriptionId $SubscriptionId
 
 #Master resource group name set to Trn_Lab_DCrepl_001
 $masterResourceGroupName = (Get-AzAutomationVariable -AutomationAccountName LabAutomation -Name 'MasterRGName' -ResourceGroupName 'LabAutomation').Value
-#$labRegions = (Get-AzAutomationVariable -AutomationAccountName LabAutomation -Name 'LabRegions' -ResourceGroupName 'LabAutomation').Value
-$labRegions = "westus"
+$labRegions = (Get-AzAutomationVariable -AutomationAccountName LabAutomation -Name 'LabRegions' -ResourceGroupName 'LabAutomation').Value
 #endregion - Define variables
 
 #Get list of VM names in the Master resource group
