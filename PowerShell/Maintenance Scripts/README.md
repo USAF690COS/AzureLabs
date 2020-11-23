@@ -7,7 +7,8 @@ Creates a VHD snapshot of each OS and data disk, if any, for a VM. Each snapshot
     VMLIST
         - Required: No
         - Type: String
-        - Description: Comma separated value of VM names to be backed up. Ex. VM1,VM2, VM3. Type 'all' to back up all VMs in the master resource group. 
+        - Description: Comma separated value of VM names to be backed up. Ex. VM1,VM2, VM3. 
+        Type 'all' to back up all VMs in the master resource group. 
 
 ### Outputs
 N/A
