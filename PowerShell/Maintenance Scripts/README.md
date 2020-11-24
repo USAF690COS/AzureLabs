@@ -15,7 +15,7 @@ N/A
 
 
 ## CleanUpImages
-Manages storage of VHD snapshots per region and storage account. Ensures we have copies of the last 4 most recent snapshots/blobs and at least 1 snapshot/blob per disk from the last 6 months. This will allow us to rollback to different versions of the VMs in the master resource group.
+Manages storage of VHD snapshots per storage account in each Azure region. Retains a copy of the 4 most recent snapshots/blobs and at least 1 snapshot/blob per disk from the last 6 months. This enables rollback to different versions of the VMs in the master resource group.
 
 ### Parameters
 N/A
