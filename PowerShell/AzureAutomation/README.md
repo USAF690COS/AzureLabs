@@ -12,7 +12,8 @@ Powershell runbook used to deploy a lab instance.
 
 ## BackupVMs
 Powershell runbook used to backup master VMs for generating new templates. 
->[!NOTE] Use the 'LabRegions' variable in the LabAutomation account to specify where backups of the VMs should be stored. This allows snapshots of those VMs to be readily accessible in regions where the labs would be deployed.
+> [!NOTE] Use the 'LabRegions' variable in the LabAutomation account to specify where backups of the VMs should be stored.
+> This allows snapshots of those VMs to be readily accessible in regions where the labs would be deployed.
 
 ### Parameters
 *Placeholder*
