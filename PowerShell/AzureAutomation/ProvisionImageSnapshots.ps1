@@ -6,7 +6,7 @@
 
     .NOTES
         AUTHOR: Kevin Dillon
-        LASTEDIT: 6-4-2020
+        LASTEDIT: 3-31-2021
         LASTCHANGE: Set VM generation for new snapshot based on source VM configuration ($vmGen)
 #>
 
@@ -42,7 +42,7 @@ Select-AzSubscription -SubscriptionId $SubscriptionId
 
 $storageType = 'Standard_LRS'
 $storageAccountPrefix = "vmimagevhds"
-$regions = "westus", "westus2"
+$regions = "westus2"
 $masterResourceGroupName = (Get-AzAutomationVariable -AutomationAccountName LabAutomation -Name 'MasterRGName' -ResourceGroupName 'LabAutomation').Value
 $vms = (Get-AzVM -ResourceGroupName $masterResourceGroupName).name
 
