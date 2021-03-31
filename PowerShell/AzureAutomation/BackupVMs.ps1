@@ -6,12 +6,11 @@
 
     .NOTES
         AUTHOR: Kevin Dillon
-        LASTEDIT: 5-14-2020
+        LASTEDIT: 3-31-2021
 
     .PARAMETER vmList
         A comma-seperated list of VM names to backup. 
         Default value of 'all' is used to backup all VMs in the master resource group.
-
 #>
 param(
     [Parameter(Mandatory = $false)]
@@ -68,7 +67,7 @@ else {
 
 # Setup variables
 $storageAccountPrefix = "vmimagevhds"
-$regions = "westus", "westus2"
+$regions = "westus2"
 $masterImageRG = "MasterImageSnapshots"
 $location = (Get-AzResourceGroup -Name $sourceResourceGroupName).Location
 $sasExpiryDuration = "7200"
