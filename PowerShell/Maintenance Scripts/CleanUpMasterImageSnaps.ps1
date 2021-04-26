@@ -39,7 +39,7 @@ $rgLock = Get-AzResourceLock -ResourceGroupName $resourceGroupName -LockName $lo
 If($rgLock) {
     #RG is locked, must delete before editing
     Write-Host "Removing resource group lock: $rgLock.Name `n"
-    Remove-AzResourceLock -ResourceGroupName $resourceGroupName -LockName $lockName -WhatIf -Force
+    Remove-AzResourceLock -ResourceGroupName $resourceGroupName -LockName $lockName -Force
 }
 #endregion - Remove resource lock
     
@@ -98,7 +98,7 @@ ForEach ($vmName in $vmNames) {
                 If(!$vmOSSnapsToKeep.Contains($snap)) {
                     #OS snapshot is not in list to keep, delete it
                     Write-Host "Delete snapshot = $snap `n"
-                    Remove-AzSnapshot -ResourceGroupName $resourceGroupName -SnapshotName $snap -WhatIf -Force
+                    Remove-AzSnapshot -ResourceGroupName $resourceGroupName -SnapshotName $snap -Force
                 }
             }
         }
@@ -140,7 +140,7 @@ ForEach ($vmName in $vmNames) {
                 If(!$vmDataDiskSnapsToKeep.Contains($snap)) {
                     #Datadisk snapshot is not in list to keep, delete it
                     Write-Host "Delete snapshot = $snap `n"
-                    Remove-AzSnapshot -ResourceGroupName $resourceGroupName -SnapshotName $snap -WhatIf -Force
+                    Remove-AzSnapshot -ResourceGroupName $resourceGroupName -SnapshotName $snap -Force
                 }
             }
         }
@@ -150,5 +150,5 @@ ForEach ($vmName in $vmNames) {
 
 #region - Reapply resource group lock
 Write-Host "Reapplying resource group lock: $lockName `n"
-New-AzResourceLock -LockName $lockName -LockLevel $lockLevel -LockNotes $lockNotes -ResourceGroupName $resourceGroupName -WhatIf -Force
+New-AzResourceLock -LockName $lockName -LockLevel $lockLevel -LockNotes $lockNotes -ResourceGroupName $resourceGroupName -Force
 #endregion - Readd resource group lock
