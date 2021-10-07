@@ -19,18 +19,6 @@
                 "description": "Lab deployment region"
             }
         },
-        "labType": {
-            "type": "string",
-            "allowedValues": [
-                "DSO",
-                "VRO"
-            ],
-            "defaultValue": "DSO",
-            "metadata": {
-                "description": "Lab operator role type"
-            }
-
-        },
         "labName": {
             "type": "string",
             "allowedValues": [
@@ -39,7 +27,8 @@
                 "dhcp",
                 "sccm",
                 "sccmadv",
-                "gpa"
+                "gpa",
+                "allvms"
             ],            
             "metadata": {
                 "description": "Lab scenario name"
