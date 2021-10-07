@@ -1,0 +1,4 @@
+{
+  "itemDisplayName": "DC3 VM",
+  "description": "Template to deploy DC3 VM in new lab instance resource group"
+}

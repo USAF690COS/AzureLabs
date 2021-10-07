@@ -1,0 +1,4 @@
+{
+  "itemDisplayName": "Srv2019 VM",
+  "description": "Template to deploy Server 2019 Member Server VM in new lab instance resource group"
+}

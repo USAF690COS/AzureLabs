@@ -9,14 +9,14 @@
       "snapshotResourceGroup": "[concat('vmImages-', variables('location'))]",
       "storageAccountName": "[concat('vmimagevhds', variables('location'))]",
       "storageAccountResourceID": "[resourceId(variables('snapshotResourceGroup'), 'Microsoft.Storage/storageAccounts', variables('storageAccountName'))]",
-      "vmName": "DHCP",
+      "vmName": "Srv2019",
       "osType": "Windows",
       "vmSize": "Standard_B2s",
       "virtualNetworkName": "[concat('vnet-',variables('rgName'))]",
       "subnetName": "Subnet1",
       "subnetRef": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworkName'),  variables('subnetName'))]",
       "nicName": "[concat(variables('vmName'), '-nic1')]",
-      "lastOctetIP": "8",
+      "lastOctetIP": "10",
       "lbNATPort": "[concat('60', padLeft(variables('lastOctetIP'), 3, '0'))]",
       "lbNATRuleName": "[concat(variables('vmName'), '-NAT-In')]",
       "privateIPAddress": "[concat('10.10.0.', variables('lastOctetIP'))]",
@@ -75,7 +75,7 @@
             "hyperVGeneration": "V2",
             "creationData": {
                 "createOption": "Copy",
-                "sourceResourceId": "[resourceId(variables('snapshotResourceGroup'), 'Microsoft.Compute/snapshots', reference(variables('storageAccountResourceID'), '2018-07-01', 'Full').tags.TrnLabDCreplDH1Active)]"
+                "sourceResourceId": "[resourceId(variables('snapshotResourceGroup'), 'Microsoft.Compute/snapshots', reference(variables('storageAccountResourceID'), '2018-07-01', 'Full').tags.TrnLabDCreplS19Active)]"
             },
             "diskSizeGB": 128,
             "diskIOPSReadWrite": 500,
@@ -170,7 +170,7 @@
         "VMName": {
             "type": "string",
             "value": "[variables('vmName')]"
-        },
+        },      
         "PublicIPResourceID": {
             "type": "string",
             "value": "[resourceId(variables('rgName'),'Microsoft.Network/publicIPAddresses',variables('publicIPAddressName'))]"
@@ -179,5 +179,5 @@
             "type": "string",
             "value": "[variables('lbNATPort')]"
         }
-    }    
+    }     
 }
