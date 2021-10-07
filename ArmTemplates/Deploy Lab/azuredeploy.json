@@ -12,7 +12,8 @@
             "type": "string",
             "allowedValues": [
                 "westus",
-                "westus2"
+                "westus2",
+                "usgovarizona"
             ],                
             "metadata": {
                 "description": "Lab deployment region"
