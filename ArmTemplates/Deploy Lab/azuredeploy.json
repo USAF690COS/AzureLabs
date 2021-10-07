@@ -44,7 +44,8 @@
         "lcaseLabName": "[toLower(parameters('labName'))]",
         "labDeployTemplateURL": "[concat('https://raw.githubusercontent.com/USAF690COS/AzureLabs/master/ArmTemplates/LabDefinitions/azuredeploy.json')]",
         "labDeployParametersURL": "[concat('https://raw.githubusercontent.com/USAF690COS/AzureLabs/master/ArmTemplates/LabDefinitions/azuredeploy.parameters.', variables('lcaseLabName'), '.json')]", 
-        "rgName": "[concat('Lab-', parameters('userName') , '-', parameters('labName'))]",
+
+        "rgName": "MasterLabVMs",
         "labDeploymentName": "[concat(variables('rgName'), '-LabDeployment')]",
         "resourceTags": {
             "CreatedBy": "[parameters('userName')]",
@@ -84,7 +85,7 @@
                         "resourceTags": "[resourceGroup().tags]",
                         "lbName": "[concat('LB-', variables('rgName'))]",
                         "publicIPAddressName": "[concat('PIP-', variables('rgName'))]",
-                        "publicIPAddressDNS" : "[toLower(concat(variables('rgName'),'-690cos'))]",
+                        "publicIPAddressDNS" : "[toLower(concat(variables('rgName')))]",
                         "publicIPAddressType": "Dynamic",
                         "availabilitySetName": "[concat('AS-', variables('rgName'))]"
                     },
