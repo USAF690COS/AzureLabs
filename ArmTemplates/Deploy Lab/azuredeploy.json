@@ -48,7 +48,6 @@
         "labDeploymentName": "[concat(variables('rgName'), '-LabDeployment')]",
         "resourceTags": {
             "CreatedBy": "[parameters('userName')]",
-            "LabType": "[parameters('labType')]",
             "LabName": "[parameters('labName')]"
         }
     },
