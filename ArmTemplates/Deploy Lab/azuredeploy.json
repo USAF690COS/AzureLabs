@@ -44,8 +44,7 @@
         "lcaseLabName": "[toLower(parameters('labName'))]",
         "labDeployTemplateURL": "[concat('https://raw.githubusercontent.com/USAF690COS/AzureLabs/master/ArmTemplates/LabDefinitions/azuredeploy.json')]",
         "labDeployParametersURL": "[concat('https://raw.githubusercontent.com/USAF690COS/AzureLabs/master/ArmTemplates/LabDefinitions/azuredeploy.parameters.', variables('lcaseLabName'), '.json')]", 
-
-        "rgName": "MasterLabVMs",
+        "rgName": "[concat('Lab-', parameters('userName') , '-', parameters('labName'))]",
         "labDeploymentName": "[concat(variables('rgName'), '-LabDeployment')]",
         "resourceTags": {
             "CreatedBy": "[parameters('userName')]",
