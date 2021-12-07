@@ -76,7 +76,7 @@
             "hyperVGeneration": "[variables('vmGeneration')]",
             "creationData": {
                 "createOption": "Copy",
-                "sourceResourceId": "[resourceId(variables('snapshotResourceGroup'), 'Microsoft.Compute/snapshots', reference(variables('storageAccountResourceID'), '2018-07-01', 'Full').tags.TrnLabGpaSQdbActive)]"
+                "sourceResourceId": "[resourceId(variables('snapshotResourceGroup'), 'Microsoft.Compute/snapshots', reference(variables('storageAccountResourceID'), '2018-07-01', 'Full').tags.GPASQLActive)]"
             },
             "diskSizeGB": 128,
             "diskIOPSReadWrite": 500,
@@ -99,7 +99,7 @@
             "osType": "Windows",
             "creationData": {
                 "createOption": "Copy",
-                "sourceResourceId": "[resourceId(variables('snapshotResourceGroup'), 'Microsoft.Compute/snapshots', reference(variables('storageAccountResourceID'), '2018-07-01', 'Full').tags.TrnLabGpaSQdb_DataDisk_0Active)]"
+                "sourceResourceId": "[resourceId(variables('snapshotResourceGroup'), 'Microsoft.Compute/snapshots', reference(variables('storageAccountResourceID'), '2018-07-01', 'Full').tags.GPASQL_DataDisk_0Active)]"
             },
             "diskSizeGB": 1024,
             "diskIOPSReadWrite": 500,
@@ -122,7 +122,7 @@
             "osType": "Windows",
             "creationData": {
                 "createOption": "Copy",
-                "sourceResourceId": "[resourceId(variables('snapshotResourceGroup'), 'Microsoft.Compute/snapshots', reference(variables('storageAccountResourceID'), '2018-07-01', 'Full').tags.TrnLabGpaSQdb_DataDisk_1Active)]"
+                "sourceResourceId": "[resourceId(variables('snapshotResourceGroup'), 'Microsoft.Compute/snapshots', reference(variables('storageAccountResourceID'), '2018-07-01', 'Full').tags.GPASQL_DataDisk_1Active)]"
             },
             "diskSizeGB": 1024,
             "diskIOPSReadWrite": 500,

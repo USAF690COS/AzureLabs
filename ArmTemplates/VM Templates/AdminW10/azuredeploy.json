@@ -75,7 +75,7 @@
             "hyperVGeneration": "V2",
             "creationData": {
                 "createOption": "Copy",
-                "sourceResourceId": "[resourceId(variables('snapshotResourceGroup'), 'Microsoft.Compute/snapshots', reference(variables('storageAccountResourceID'), '2018-07-01', 'Full').tags['TrnLabDCreplW10Active'])]"
+                "sourceResourceId": "[resourceId(variables('snapshotResourceGroup'), 'Microsoft.Compute/snapshots', reference(variables('storageAccountResourceID'), '2018-07-01', 'Full').tags['AdminW10Active'])]"
             },
             "diskSizeGB": 128,
             "diskIOPSReadWrite": 500,

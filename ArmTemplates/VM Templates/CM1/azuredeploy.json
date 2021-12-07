@@ -74,7 +74,7 @@
             "hyperVGeneration": "V2",
             "creationData": {
                 "createOption": "Copy",
-                "sourceResourceId": "[resourceId(variables('snapshotResourceGroup'), 'Microsoft.Compute/snapshots', reference(variables('storageAccountResourceID'), '2018-07-01', 'Full').tags.TrnLabCMPS1Active)]"
+                "sourceResourceId": "[resourceId(variables('snapshotResourceGroup'), 'Microsoft.Compute/snapshots', reference(variables('storageAccountResourceID'), '2018-07-01', 'Full').tags.CM1Active)]"
             },
             "diskSizeGB": 128,
             "diskIOPSReadWrite": 500,
@@ -96,7 +96,7 @@
             "osType": "Windows",
             "creationData": {
                 "createOption": "Copy",
-                "sourceResourceId": "[resourceId(variables('snapshotResourceGroup'), 'Microsoft.Compute/snapshots', reference(variables('storageAccountResourceID'), '2018-07-01', 'Full').tags.TrnLabCMPS1_DataDisk_0Active)]"
+                "sourceResourceId": "[resourceId(variables('snapshotResourceGroup'), 'Microsoft.Compute/snapshots', reference(variables('storageAccountResourceID'), '2018-07-01', 'Full').tags.CM1_DataDisk_0Active)]"
             },
             "diskSizeGB": 129,
             "diskIOPSReadWrite": 500,
@@ -118,7 +118,7 @@
             "osType": "Windows",
             "creationData": {
                 "createOption": "Copy",
-                "sourceResourceId": "[resourceId(variables('snapshotResourceGroup'), 'Microsoft.Compute/snapshots', reference(variables('storageAccountResourceID'), '2018-07-01', 'Full').tags.TrnLabCMPS1_CMDiskActive)]"
+                "sourceResourceId": "[resourceId(variables('snapshotResourceGroup'), 'Microsoft.Compute/snapshots', reference(variables('storageAccountResourceID'), '2018-07-01', 'Full').tags.CM1_CMDiskActive)]"
             },
             "diskSizeGB": 128,
             "diskIOPSReadWrite": 500,
@@ -140,7 +140,7 @@
             "osType": "Windows",
             "creationData": {
                 "createOption": "Copy",
-                "sourceResourceId": "[resourceId(variables('snapshotResourceGroup'), 'Microsoft.Compute/snapshots', reference(variables('storageAccountResourceID'), '2018-07-01', 'Full').tags.TrnLabCMPS1_ConLibActive)]"
+                "sourceResourceId": "[resourceId(variables('snapshotResourceGroup'), 'Microsoft.Compute/snapshots', reference(variables('storageAccountResourceID'), '2018-07-01', 'Full').tags.CM1_ConLibActive)]"
             },
             "diskSizeGB": 128,
             "diskIOPSReadWrite": 500,
